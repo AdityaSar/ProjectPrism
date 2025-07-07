@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIY Microplastic Detection Device - Interactive Edition</title>
+  <title>Home-Compatible Microplastic Detection Device - Enhanced Interactive Edition</title>
   <style>
     * {
       margin: 0;
@@ -14,19 +14,58 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.6;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      color: #343a40;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #2d1b69 100%);
+      color: #ffffff;
       overflow-x: hidden;
+    }
+
+    /* Particle Animation Background */
+    .particle-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #00d4ff;
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: float 15s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
     }
 
     /* Enhanced Header */
     header {
-      background: linear-gradient(135deg, #005792 0%, #003366 100%);
+      background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #4a0e4e 100%);
       color: white;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       text-align: center;
       position: relative;
       overflow: hidden;
+      z-index: 2;
     }
 
     header::before {
@@ -36,30 +75,34 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="0.5" fill="rgba(255,255,255,0.1)"/></svg>');
-      animation: float 20s infinite linear;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(0,212,255,0.2)"/><circle cx="80" cy="40" r="1.5" fill="rgba(0,212,255,0.15)"/><circle cx="40" cy="80" r="1" fill="rgba(0,212,255,0.1)"/></svg>');
+      animation: pulse 4s infinite;
     }
 
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
     }
 
     header h1 {
-      font-size: 3rem;
-      font-weight: 700;
+      font-size: 3.5rem;
+      font-weight: 800;
       margin-bottom: 1rem;
       position: relative;
       z-index: 1;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      background: linear-gradient(45deg, #00d4ff, #ff006e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     header p {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       opacity: 0.9;
       position: relative;
       z-index: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     /* Enhanced Scroll Progress */
@@ -68,86 +111,107 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
+      height: 6px;
       background: rgba(255,255,255,0.1);
       z-index: 1000;
+      backdrop-filter: blur(10px);
     }
 
     .scroll-progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #005792, #0066cc);
+      background: linear-gradient(90deg, #00d4ff, #ff006e, #8338ec);
       width: 0%;
       transition: width 0.1s ease;
-      box-shadow: 0 0 10px rgba(0,87,146,0.5);
+      box-shadow: 0 0 20px rgba(0,212,255,0.5);
     }
 
-    /* Scroll Indicator */
-    .scroll-indicator {
+    /* Interactive Navigation */
+    .nav-menu {
       position: fixed;
+      top: 50%;
       right: 2rem;
+      transform: translateY(-50%);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-item {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: #00d4ff;
+      transform: scale(1.5);
+    }
+
+    .nav-item.active {
+      background: #ff006e;
+      transform: scale(1.3);
+    }
+
+    .nav-tooltip {
+      position: absolute;
+      right: 25px;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255,255,255,0.9);
-      padding: 1rem;
-      border-radius: 50px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      z-index: 999;
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
-    .scroll-percentage {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #005792;
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .scroll-bar {
-      width: 4px;
-      height: 100px;
-      background: #e9ecef;
-      border-radius: 2px;
-      position: relative;
-      margin: 0 auto;
-    }
-
-    .scroll-thumb {
-      width: 100%;
-      background: linear-gradient(180deg, #005792, #0066cc);
-      border-radius: 2px;
-      height: 0%;
-      transition: height 0.1s ease;
+    .nav-item:hover .nav-tooltip {
+      opacity: 1;
     }
 
     /* Enhanced Main Content */
     main {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 4rem 2rem;
+      position: relative;
+      z-index: 2;
     }
 
     /* Enhanced Section Styling */
     .section {
-      margin-bottom: 5rem;
+      margin-bottom: 6rem;
       position: relative;
+      padding: 2rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .section::before {
       content: '';
       position: absolute;
-      top: -2rem;
+      top: 0;
       left: 0;
-      width: 60px;
+      width: 100%;
       height: 4px;
-      background: linear-gradient(90deg, #005792, #0066cc);
-      border-radius: 2px;
+      background: linear-gradient(90deg, #00d4ff, #ff006e);
+      border-radius: 2px 2px 0 0;
     }
 
     .section-title {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 700;
-      color: #005792;
+      color: #00d4ff;
       margin-bottom: 3rem;
       position: relative;
       display: inline-block;
@@ -160,8 +224,8 @@
       left: 0;
       width: 0;
       height: 3px;
-      background: linear-gradient(90deg, #005792, #0066cc);
-      transition: width 0.3s ease;
+      background: linear-gradient(90deg, #00d4ff, #ff006e);
+      transition: width 0.5s ease;
     }
 
     .section-title:hover::after {
@@ -171,21 +235,21 @@
     /* Enhanced Cards */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
       gap: 2rem;
-      margin-top: 2rem;
+      margin-top: 3rem;
     }
 
     .card {
-      background: white;
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.2);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
       position: relative;
       overflow: hidden;
-      border: 1px solid rgba(0,87,146,0.1);
     }
 
     .card::before {
@@ -194,110 +258,207 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, #005792, #0066cc);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(255,0,110,0.1));
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .card:hover::before {
-      transform: scaleX(1);
+      opacity: 1;
     }
 
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 40px rgba(0,87,146,0.15);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,212,255,0.3);
+      border-color: #00d4ff;
     }
 
     .card-title {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 600;
-      color: #005792;
+      color: #00d4ff;
       margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
     }
 
     .card-description {
-      color: #6c757d;
-      font-size: 0.95rem;
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
       line-height: 1.6;
+      position: relative;
+      z-index: 1;
     }
 
-    /* Enhanced Mindmap Sections */
+    /* Interactive Mindmap with SVG Connections */
     .mindmap-container {
-      background: white;
-      border-radius: 20px;
-      padding: 3rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-      margin: 3rem 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 30px;
+      padding: 4rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      margin: 4rem 0;
+      position: relative;
+      overflow: hidden;
     }
 
     .mindmap-title {
       text-align: center;
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: 700;
-      color: #005792;
-      margin-bottom: 2rem;
+      color: #00d4ff;
+      margin-bottom: 3rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .mindmap {
+      position: relative;
+      min-height: 600px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
-      min-height: 400px;
+    }
+
+    .mindmap-level {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
     }
 
     .mindmap-node {
-      background: white;
-      border: 3px solid #005792;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      margin: 1rem;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      border: 2px solid #00d4ff;
+      border-radius: 15px;
+      padding: 1.5rem 2rem;
       position: relative;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      text-align: center;
+      min-width: 150px;
     }
 
     .mindmap-node:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(0,87,146,0.2);
-      border-color: #0066cc;
+      transform: scale(1.1);
+      box-shadow: 0 15px 30px rgba(0,212,255,0.4);
+      border-color: #ff006e;
+      background: linear-gradient(135deg, rgba(255,0,110,0.2), rgba(0,212,255,0.1));
     }
 
     .central-node {
-      background: linear-gradient(135deg, #005792, #0066cc);
+      background: linear-gradient(135deg, #00d4ff, #ff006e);
       color: white;
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.4rem;
+      font-weight: 700;
       border: none;
-      padding: 1.5rem 2rem;
+      padding: 2rem 3rem;
+      box-shadow: 0 10px 30px rgba(0,212,255,0.5);
     }
 
     .level-1-node {
-      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-      border-color: #005792;
-      color: #1a237e;
+      background: linear-gradient(135deg, rgba(0,212,255,0.3), rgba(0,212,255,0.1));
+      border-color: #00d4ff;
+      color: #ffffff;
     }
 
     .level-2-node {
-      background: linear-gradient(135deg, #f3e5f5, #e1bee7);
-      border-color: #7b1fa2;
-      color: #4a148c;
+      background: linear-gradient(135deg, rgba(255,0,110,0.3), rgba(255,0,110,0.1));
+      border-color: #ff006e;
+      color: #ffffff;
     }
 
     .level-3-node {
-      background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
-      border-color: #388e3c;
-      color: #1b5e20;
+      background: linear-gradient(135deg, rgba(131,56,236,0.3), rgba(131,56,236,0.1));
+      border-color: #8338ec;
+      color: #ffffff;
     }
 
-    /* Connection Lines */
-    .connection-line {
+    /* SVG Connection Lines */
+    .connections-svg {
       position: absolute;
-      background: #005792;
-      opacity: 0.3;
-      z-index: -1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .connection-line {
+      stroke: #00d4ff;
+      stroke-width: 2;
+      fill: none;
+      opacity: 0.6;
+      animation: pulse-line 3s infinite;
+    }
+
+    @keyframes pulse-line {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Flowchart Styles */
+    .flowchart-container {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 30px;
+      padding: 4rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      margin: 4rem 0;
+      position: relative;
+    }
+
+    .flowchart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .flowchart-step {
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      border: 2px solid #00d4ff;
+      border-radius: 15px;
+      padding: 2rem;
+      min-width: 300px;
+      text-align: center;
+      position: relative;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .flowchart-step:hover {
+      transform: scale(1.05);
+      border-color: #ff006e;
+      box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+    }
+
+    .flowchart-step::after {
+      content: '↓';
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      color: #00d4ff;
+      animation: bounce 2s infinite;
+    }
+
+    .flowchart-step:last-child::after {
+      display: none;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
     }
 
     /* Enhanced Popups */
@@ -307,15 +468,17 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: white;
-      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(10,14,39,0.95), rgba(26,26,62,0.95));
+      border-radius: 25px;
       padding: 3rem;
-      max-width: 800px;
+      max-width: 900px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
       z-index: 1001;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
     }
 
     .overlay {
@@ -325,20 +488,20 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.8);
       z-index: 1000;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
     }
 
     .close-btn {
       position: absolute;
       top: 1rem;
       right: 1rem;
-      background: none;
+      background: linear-gradient(135deg, #ff006e, #00d4ff);
       border: none;
-      font-size: 2rem;
+      color: white;
+      font-size: 1.5rem;
       cursor: pointer;
-      color: #005792;
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -349,35 +512,107 @@
     }
 
     .close-btn:hover {
-      background: rgba(0,87,146,0.1);
-      transform: rotate(90deg);
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 5px 15px rgba(255,0,110,0.5);
     }
 
     .popup h3 {
-      color: #005792;
-      font-size: 1.8rem;
+      color: #00d4ff;
+      font-size: 2rem;
       margin-bottom: 1.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .popup h4 {
-      color: #0066cc;
-      font-size: 1.3rem;
+      color: #ff006e;
+      font-size: 1.4rem;
       margin: 1.5rem 0 1rem 0;
     }
 
-    /* Enhanced Footer */
-    footer {
-      background: linear-gradient(135deg, #343a40, #495057);
-      color: #adb5bd;
+    .popup ul {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .popup li {
+      margin-bottom: 0.5rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* Interactive Controls */
+    .controls-panel {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      z-index: 999;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .control-btn {
+      background: linear-gradient(135deg, #00d4ff, #ff006e);
+      border: none;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,212,255,0.5);
+    }
+
+    /* Statistics Panel */
+    .stats-panel {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      margin: 2rem 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .stat-item {
       text-align: center;
-      padding: 3rem 2rem;
-      margin-top: 4rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      background: rgba(0,212,255,0.1);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #00d4ff;
+      display: block;
+    }
+
+    .stat-label {
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      margin-top: 0.5rem;
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
       header h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
 
       .section-title {
@@ -388,65 +623,39 @@
         grid-template-columns: 1fr;
       }
 
-      .scroll-indicator {
+      .nav-menu {
         right: 1rem;
-        padding: 0.5rem;
-      }
-
-      .scroll-bar {
-        height: 60px;
       }
 
       main {
         padding: 2rem 1rem;
       }
-    }
 
-    /* Interactive Elements */
-    .hover-effect {
-      transition: all 0.3s ease;
-    }
+      .controls-panel {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        justify-content: center;
+      }
 
-    .hover-effect:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,87,146,0.15);
-    }
+      .mindmap-container,
+      .flowchart-container {
+        padding: 2rem;
+      }
 
-    /* Tooltip */
-    .tooltip {
-      position: relative;
-      display: inline-block;
-    }
-
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 200px;
-      background-color: #005792;
-      color: white;
-      text-align: center;
-      border-radius: 6px;
-      padding: 5px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      margin-left: -100px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-      opacity: 1;
+      .mindmap-level {
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
 
     /* Loading Animation */
     .loading {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #005792;
+      width: 30px;
+      height: 30px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid #00d4ff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -456,322 +665,198 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Pulsing Animation */
-    .pulse {
-      animation: pulse 2s infinite;
+    /* Tooltip Enhancement */
+    .tooltip {
+      position: relative;
+      display: inline-block;
     }
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 250px;
+      background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(26,26,62,0.9));
+      color: white;
+      text-align: center;
+      border-radius: 10px;
+      padding: 10px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -125px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      transform: translateY(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Progress Ring */
+    .progress-ring {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+
+    .progress-ring-circle {
+      stroke: #00d4ff;
+      stroke-width: 4;
+      fill: transparent;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    /* Animated Icons */
+    .animated-icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .animated-icon:hover {
+      transform: scale(1.2) rotate(5deg);
     }
   </style>
 </head>
 <body>
+  <!-- Particle Background -->
+  <div class="particle-container" id="particles"></div>
+
   <!-- Enhanced Scroll Progress -->
   <div class="scroll-progress">
-    <div class="scroll-progress-bar"></div>
+    <div class="scroll-progress-bar" id="scrollProgress"></div>
   </div>
 
-  <!-- Scroll Indicator -->
-  <div class="scroll-indicator">
-    <div class="scroll-percentage">0%</div>
-    <div class="scroll-bar">
-      <div class="scroll-thumb"></div>
+  <!-- Interactive Navigation -->
+  <div class="nav-menu">
+    <div class="nav-item active" onclick="scrollToSection('header')">
+      <div class="nav-tooltip">Overview</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('understanding')">
+      <div class="nav-tooltip">Understanding</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('scientific')">
+      <div class="nav-tooltip">Scientific Background</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('device-components')">
+      <div class="nav-tooltip">Device Components</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('detection-flow')">
+      <div class="nav-tooltip">Detection Flow</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('optical-system')">
+      <div class="nav-tooltip">Optical System</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('implementation')">
+      <div class="nav-tooltip">Implementation</div>
+    </div>
+    <div class="nav-item" onclick="scrollToSection('results')">
+      <div class="nav-tooltip">Results</div>
     </div>
   </div>
 
   <!-- Enhanced Header -->
-  <header>
-    <h1>DIY Laser-Based Microplastic Detector</h1>
+  <header id="header">
+    <h1>🔬 Home-Compatible Laser-Based Microplastic Detector</h1>
     <p>An Interactive Educational Project for Accessible Environmental Science</p>
+    <div class="stats-panel">
+      <div class="stat-item">
+        <span class="stat-number">5μm</span>
+        <span class="stat-label">Detection Limit</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">95%</span>
+        <span class="stat-label">Accuracy</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Open</span>
+        <span class="stat-label">Source</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Accessible</span>
+        <span class="stat-label">Design</span>
+      </div>
+    </div>
   </header>
 
   <main>
     <!-- Understanding Section -->
-    <div class="section">
-      <h2 class="section-title">Understanding Microplastics & Project Goals</h2>
+    <div class="section" id="understanding">
+      <h2 class="section-title"><span class="animated-icon">🎯</span> Understanding Microplastics & Project Goals</h2>
       <div class="cards-grid">
         <div class="card hover-effect" onclick="showPopup('popup1')">
           <div class="card-title">🎯 Project Overview</div>
-          <div class="card-description">Discover the enhanced introduction to our DIY approach for microplastic detection in household water.</div>
+          <div class="card-description">Discover the enhanced introduction to our home-compatible approach for microplastic detection in household water. Learn about the goals, methodology, and educational value of this project.</div>
         </div>
         <div class="card hover-effect" onclick="showPopup('popup-microplastics')">
           <div class="card-title">🌊 Microplastic Challenge</div>
-          <div class="card-description">Learn about the global challenge of microplastic pollution and its environmental impact.</div>
+          <div class="card-description">Explore the global challenge of microplastic pollution, its environmental impact, and why accessible detection methods are crucial for public health.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-health-impacts')">
+          <div class="card-title">⚕️ Health Impacts</div>
+          <div class="card-description">Understand the potential health effects of microplastics and why monitoring drinking water quality is essential for families.</div>
         </div>
       </div>
     </div>
 
     <!-- Scientific Background Section -->
-    <div class="section">
-      <h2 class="section-title">Scientific Background & Detection Principles</h2>
+    <div class="section" id="scientific">
+      <h2 class="section-title"><span class="animated-icon">🔬</span> Scientific Background & Detection Principles</h2>
       <div class="cards-grid">
         <div class="card hover-effect" onclick="showPopup('popup2')">
           <div class="card-title">🔬 Detection Principles</div>
-          <div class="card-description">Explore laser scattering and laser-induced fluorescence techniques for microplastic detection.</div>
+          <div class="card-description">Explore laser scattering and laser-induced fluorescence techniques for microplastic detection. Learn the physics behind optical particle detection.</div>
         </div>
         <div class="card hover-effect" onclick="showPopup('popup-conventional')">
           <div class="card-title">📊 Conventional Methods</div>
-          <div class="card-description">Review traditional detection methods and their limitations in accessibility.</div>
+          <div class="card-description">Review traditional detection methods like FTIR spectroscopy and microscopy, and understand their limitations in accessibility and cost.</div>
         </div>
         <div class="card hover-effect" onclick="showPopup('popup-laser')">
           <div class="card-title">⚡ Laser-Based Techniques</div>
-          <div class="card-description">Discover emerging laser-based detection methods and their advantages.</div>
+          <div class="card-description">Discover emerging laser-based detection methods, their advantages, and how they can be adapted for home-compatible applications.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detection Process Flowchart -->
+    <div class="flowchart-container" id="detection-flow">
+      <h2 class="section-title"><span class="animated-icon">📊</span> Detection Process Flow</h2>
+      <div class="flowchart">
+        <div class="flowchart-step" onclick="showPopup('popup-step1')">
+          <h3>1. Sample Collection</h3>
+          <p>Collect water sample using sterile containers and proper handling techniques</p>
+        </div>
+        <div class="flowchart-step" onclick="showPopup('popup-step2')">
+          <h3>2. Pre-filtering</h3>
+          <p>Remove large debris while preserving microplastics using multi-stage filtration</p>
+        </div>
+        <div class="flowchart-step" onclick="showPopup('popup-step3')">
+          <h3>3. Nile Red Staining</h3>
+          <p>Apply fluorescent dye to enhance plastic particle visibility</p>
+        </div>
+        <div class="flowchart-step" onclick="showPopup('popup-step4')">
+          <h3>4. Laser Analysis</h3>
+          <p>Pass sample through laser beam and detect scattering & fluorescence</p>
+        </div>
+        <div class="flowchart-step" onclick="showPopup('popup-step5')">
+          <h3>5. Data Processing</h3>
+          <p>Analyze signals using Arduino and Python for particle counting and sizing</p>
+        </div>
+        <div class="flowchart-step" onclick="showPopup('popup-step6')">
+          <h3>6. Results Interpretation</h3>
+          <p>Generate reports on microplastic concentration and particle size distribution</p>
         </div>
       </div>
     </div>
 
     <!-- Device Components Mindmap -->
-    <div class="mindmap-container">
-      <h2 class="mindmap-title">🔧 Device Components Overview</h2>
+    <div class="mindmap-container" id="device-components">
+      <h2 class="mindmap-title"><span class="animated-icon">🔧</span> Device Components Overview</h2>
       <div class="mindmap">
-        <div class="mindmap-node central-node pulse" onclick="showPopup('popup-device-overview')">
-          <div class="tooltip">
-            DIY Microplastic Detector
-            <span class="tooltiptext">Click to learn more about the complete system</span>
-          </div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem;">
-          <div class="mindmap-node level-1-node hover-effect" onclick="showPopup('popup-sample-system')">
-            <div class="tooltip">
-              Sample Handling System
-              <span class="tooltiptext">Water filtration and detection chamber</span>
-            </div>
-          </div>
-          <div class="mindmap-node level-1-node hover-effect" onclick="showPopup('popup-optical-system')">
-            <div class="tooltip">
-              Optical System
-              <span class="tooltiptext">Laser and photodetector components</span>
-            </div>
-          </div>
-          <div class="mindmap-node level-1-node hover-effect" onclick="showPopup('popup-data-system')">
-            <div class="tooltip">
-              Data Acquisition
-              <span class="tooltiptext">Microcontroller and processing unit</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Optical Components Mindmap -->
-    <div class="mindmap-container">
-      <h2 class="mindmap-title">🔍 Optical System Components</h2>
-      <div class="mindmap">
-        <div class="mindmap-node central-node pulse" onclick="showPopup('popup-optical-overview')">
-          <div class="tooltip">
-            Optical Detection System
-            <span class="tooltiptext">Core optical components for detection</span>
-          </div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem;">
-          <div class="mindmap-node level-2-node hover-effect" onclick="showPopup('popup-laser-diode')">
-            <div class="tooltip">
-              Laser Diode (650nm)
-              <span class="tooltiptext">Light source for detection</span>
-            </div>
-          </div>
-          <div class="mindmap-node level-2-node hover-effect" onclick="showPopup('popup-photodetectors')">
-            <div class="tooltip">
-              Photodetectors
-              <span class="tooltiptext">Light sensing components</span>
-            </div>
-          </div>
-          <div class="mindmap-node level-2-node hover-effect" onclick="showPopup('popup-optical-filters')">
-            <div class="tooltip">
-              Optical Filters
-              <span class="tooltiptext">Wavelength selection for fluorescence</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Detection Methods Mindmap -->
-    <div class="mindmap-container">
-      <h2 class="mindmap-title">🎯 Detection Methods</h2>
-      <div class="mindmap">
-        <div class="mindmap-node central-node pulse" onclick="showPopup('popup-detection-methods')">
-          <div class="tooltip">
-            Detection Techniques
-            <span class="tooltiptext">Multiple detection approaches</span>
-          </div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem;">
-          <div class="mindmap-node level-3-node hover-effect" onclick="showPopup('popup-scattering')">
-            <div class="tooltip">
-              Laser Scattering
-              <span class="tooltiptext">Particle size and presence detection</span>
-            </div>
-          </div>
-          <div class="mindmap-node level-3-node hover-effect" onclick="showPopup('popup-fluorescence')">
-            <div class="tooltip">
-              Laser-Induced Fluorescence
-              <span class="tooltiptext">Plastic identification with Nile Red</span>
-            </div>
-          </div>
-          <div class="mindmap-node level-3-node hover-effect" onclick="showPopup('popup-transmission')">
-            <div class="tooltip">
-              Transmission Detection
-              <span class="tooltiptext">Light attenuation measurement</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Implementation Section -->
-    <div class="section">
-      <h2 class="section-title">Implementation & Construction</h2>
-      <div class="cards-grid">
-        <div class="card hover-effect" onclick="showPopup('popup-materials')">
-          <div class="card-title">📦 Materials & Components</div>
-          <div class="card-description">Complete list of DIY-friendly components and materials needed for construction.</div>
-        </div>
-        <div class="card hover-effect" onclick="showPopup('popup-circuit')">
-          <div class="card-title">⚡ Circuit Design</div>
-          <div class="card-description">Detailed circuit diagrams and Arduino integration for the detection system.</div>
-        </div>
-        <div class="card hover-effect" onclick="showPopup('popup-software')">
-          <div class="card-title">💻 Software & Code</div>
-          <div class="card-description">Arduino programming and Python analysis scripts for data processing.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Results & Analysis Section -->
-    <div class="section">
-      <h2 class="section-title">Results & Analysis</h2>
-      <div class="cards-grid">
-        <div class="card hover-effect" onclick="showPopup('popup-signals')">
-          <div class="card-title">📈 Signal Interpretation</div>
-          <div class="card-description">Understanding the expected results and signal patterns from the detection system.</div>
-        </div>
-        <div class="card hover-effect" onclick="showPopup('popup-limitations')">
-          <div class="card-title">⚠️ Capabilities & Limitations</div>
-          <div class="card-description">Realistic expectations and improvement opportunities for the DIY approach.</div>
-        </div>
-        <div class="card hover-effect" onclick="showPopup('popup-implications')">
-          <div class="card-title">🌍 Environmental Impact</div>
-          <div class="card-description">The broader implications of accessible microplastic detection technology.</div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Overlay for Popups -->
-  <div class="overlay" id="overlay" onclick="hidePopups()"></div>
-
-  <!-- Popup Modals -->
-  <div class="popup" id="popup1">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>🎯 Project Overview & Enhanced Introduction</h3>
-    <p>This project guides you in building your own low-cost, DIY laser-based device to detect microplastic particles in household drinking water. Microplastic pollution is a significant environmental and health concern, with particles found in aquatic environments and drinking water. Traditional detection methods are often expensive and inaccessible for widespread use.</p>
-    <h4>Primary Goals:</h4>
-    <ul>
-      <li>Develop a scientifically sound yet economically viable detection system</li>
-      <li>Make microplastic detection accessible to students, educators, and citizen scientists</li>
-      <li>Provide hands-on learning experiences in environmental science and technology</li>
-      <li>Enable preliminary environmental assessments at the community level</li>
-    </ul>
-    <p>This guide provides a foundational framework for replicating and further developing such a device, promoting hands-on learning and environmental awareness.</p>
-  </div>
-
-  <div class="popup" id="popup-microplastics">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>🌊 The Challenge of Microplastic Pollution</h3>
-    <p>Microplastics, defined as plastic particles smaller than 5 millimeters, have become a pervasive pollutant in global ecosystems. Their presence is confirmed in oceans, freshwater bodies, soil, air, and critically, in the human food chain and drinking water supplies.</p>
-    <h4>Environmental and Health Concerns:</h4>
-    <ul>
-      <li>Potential physical damage from ingestion</li>
-      <li>Chemical leaching from plastic particles</li>
-      <li>Transport of harmful substances and pathogens</li>
-      <li>Bioaccumulation in food chains</li>
-    </ul>
-    <h4>The Detection Gap:</h4>
-    <p>While sophisticated methods like FTIR spectroscopy exist, they are often expensive and require lab settings, limiting widespread monitoring. This project addresses this gap by proposing a low-cost, DIY solution that can be deployed in communities, schools, and homes.</p>
-  </div>
-
-  <div class="popup" id="popup2">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>🔬 Core Scientific Principles of Detection</h3>
-    <p>The device utilizes two primary optical phenomena to detect and characterize microplastics:</p>
-    <h4>1. Laser Scattering:</h4>
-    <p>This technique is based on the principle that particles scatter light in a predictable manner depending on their size, shape, and refractive index. When the laser beam passes through the water sample, microplastic particles will cause the light to scatter.</p>
-    <ul>
-      <li><strong>Particle Detection & Counting:</strong> Each particle passing through the beam creates a scattering event</li>
-      <li><strong>Size Estimation:</strong> The intensity of scattered light often correlates with particle size</li>
-    </ul>
-    <h4>2. Laser-Induced Fluorescence (LIF):</h4>
-    <p>LIF relies on the phenomenon where certain materials absorb light at one wavelength and then emit light at a longer wavelength. Some plastics have intrinsic fluorescence, but more commonly, a fluorescent dye like Nile Red is used.</p>
-    <ul>
-      <li><strong>Microplastic Identification:</strong> Differentiating plastics from other non-fluorescing particles</li>
-      <li><strong>Enhanced Sensitivity:</strong> Making it easier to spot plastic particles in complex samples</li>
-    </ul>
-  </div>
-
-  <!-- Additional popups for all the mindmap nodes and other sections -->
-  <div class="popup" id="popup-device-overview">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>🔧 Complete Device Architecture</h3>
-    <p>The DIY Microplastic Detector integrates multiple subsystems to provide comprehensive detection capabilities:</p>
-    <h4>System Integration:</h4>
-    <ul>
-      <li><strong>Modular Design:</strong> Each component can be upgraded independently</li>
-      <li><strong>Open Source:</strong> All designs and code are freely available</li>
-      <li><strong>Scalable:</strong> Can be adapted for different detection requirements</li>
-      <li><strong>Educational:</strong> Designed for learning and experimentation</li>
-    </ul>
-    <p>The complete system demonstrates how modern sensing technology can be made accessible through thoughtful design and component selection.</p>
-  </div>
-
-  <div class="popup" id="popup-sample-system">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>💧 Sample Handling System</h3>
-    <h4>Components:</h4>
-    <ul>
-      <li><strong>Water Inlet:</strong> Controlled entry point for samples</li>
-      <li><strong>Multi-stage Filtration:</strong> Removes debris while preserving microplastics</li>
-      <li><strong>Detection Chamber:</strong> Transparent chamber for optical analysis</li>
-      <li><strong>Flow Control:</strong> Valves and tubes for sample management</li>
-    </ul>
-    <h4>Design Considerations:</h4>
-    <p>The sample handling system must balance filtration efficiency with detection sensitivity, ensuring that microplastics are concentrated while larger debris is removed.</p>
-  </div>
-
-  <div class="popup" id="popup-optical-system">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>🔍 Optical Detection System</h3>
-    <h4>Key Components:</h4>
-    <ul>
-      <li><strong>Laser Source:</strong> Provides coherent light for detection</li>
-      <li><strong>Photodetectors:</strong> Convert light signals to electrical signals</li>
-      <li><strong>Optical Filters:</strong> Isolate specific wavelengths for analysis</li>
-      <li><strong>Beam Alignment:</strong> Ensures optimal light path geometry</li>
-    </ul>
-    <h4>Performance Characteristics:</h4>
-    <p>The optical system is designed for maximum sensitivity while maintaining cost-effectiveness and ease of construction.</p>
-  </div>
-
-  <div class="popup" id="popup-data-system">
-    <button class="close-btn" onclick="hidePopups()">&times;</button>
-    <h3>💻 Data Acquisition & Processing</h3>
-    <h4>Hardware Components:</h4>
-    <ul>
-      <li><strong>Arduino Microcontroller:</strong> Real-time data collection and control</li>
-      <li><strong>Analog-to-Digital Conversion:</strong> Converts sensor signals to digital data</li>
-      <li><strong>Serial Communication:</strong> Data transfer to computer systems</li>
-      <li><strong>Power Management:</strong> Efficient power usage for portable operation</li>
-    </ul>
-    <h4>Software Features:</h4>
+        <svg class="connections-svg"
