@@ -3,855 +3,775 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIY Microplastic Detection Device - Enhanced Edition</title>
+  <title>DIY Microplastic Detection Device - Interactive Edition</title>
   <style>
-    /* General Body and Typography */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.7;
-      margin: 0;
-      background: #f8f9fa;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       color: #343a40;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      overflow-x: hidden;
     }
 
+    /* Enhanced Header */
     header {
-      background: #005792;
+      background: linear-gradient(135deg, #005792 0%, #003366 100%);
       color: white;
-      padding: 1.5rem 2rem;
+      padding: 3rem 2rem;
       text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    header h1 {
-      margin: 0 0 0.25rem 0;
-      font-size: 2.25rem;
-      font-weight: 600;
-    }
-    header p {
-      margin: 0;
-      font-size: 1rem;
-      color: #e0e0e0;
-    }
-
-    main {
-      padding: 2.5rem 1.5rem;
-      max-width: 1100px;
-      width: 90%;
-      margin: 2rem auto;
-      flex-grow: 1;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    h2 { /* Section Titles */
-      color: #005792;
-      font-size: 1.75rem;
-      font-weight: 600;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid #e0e0e0; /* Lighter base border */
-      margin-bottom: 1.5rem;
-      text-align: left;
       position: relative;
-      transition: color 0.3s ease;
-    }
-    h2:hover {
-      color: #003366;
-    }
-    h2::after {
-        content: '';
-        position: absolute;
-        bottom: -2px; /* Position it right on top of the border-bottom */
-        left: 0;
-        width: 0;
-        height: 2px;
-        background-color: #005792; /* Theme color for hover underline */
-        transition: width 0.3s ease-in-out;
-    }
-    h2:hover::after {
-        width: 100%;
+      overflow: hidden;
     }
 
-    h3 { /* Popup Titles */
-      color: #004080;
-      font-size: 1.5rem;
-      margin-top: 0;
-    }
-    h4 { /* Popup Sub-Headings */
-      color: #005792;
-      font-size: 1.15rem;
-      margin-top: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .section {
-      margin-bottom: 3rem;
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="0.5" fill="rgba(255,255,255,0.1)"/></svg>');
+      animation: float 20s infinite linear;
     }
 
-    .card {
-      background: #ffffff;
-      padding: 1.25rem 1.5rem;
-      margin: 1rem 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border-left: 4px solid #005792;
-    }
-    .card:hover {
-      transform: translateY(-3px) scale(1.01);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
     }
 
-    /* Scroll Progress Bar Styles */
-    #scroll-progress-bar-container {
+    header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Enhanced Scroll Progress */
+    .scroll-progress {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 6px;
-      background-color: transparent;
-      z-index: 998; /* Below overlay and popups */
-    }
-    #scroll-progress-bar {
-      height: 100%;
-      background-color: #005792;
-      width: 0%;
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
-      transition: width 0.1s linear;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      z-index: 1000;
     }
 
-    /* Popup styles */
+    .scroll-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #005792, #0066cc);
+      width: 0%;
+      transition: width 0.1s ease;
+      box-shadow: 0 0 10px rgba(0,87,146,0.5);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.9);
+      padding: 1rem;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+
+    .scroll-percentage {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #005792;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .scroll-bar {
+      width: 4px;
+      height: 100px;
+      background: #e9ecef;
+      border-radius: 2px;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .scroll-thumb {
+      width: 100%;
+      background: linear-gradient(180deg, #005792, #0066cc);
+      border-radius: 2px;
+      height: 0%;
+      transition: height 0.1s ease;
+    }
+
+    /* Enhanced Main Content */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    /* Enhanced Section Styling */
+    .section {
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .section::before {
+      content: '';
+      position: absolute;
+      top: -2rem;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #005792, #0066cc);
+      border-radius: 2px;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #005792;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #005792, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .section-title:hover::after {
+      width: 100%;
+    }
+
+    /* Enhanced Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,87,146,0.1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #005792, #0066cc);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0,87,146,0.15);
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #005792;
+      margin-bottom: 1rem;
+    }
+
+    .card-description {
+      color: #6c757d;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Enhanced Mindmap Sections */
+    .mindmap-container {
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      margin: 3rem 0;
+    }
+
+    .mindmap-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #005792;
+      margin-bottom: 2rem;
+    }
+
+    .mindmap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      min-height: 400px;
+    }
+
+    .mindmap-node {
+      background: white;
+      border: 3px solid #005792;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin: 1rem;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .mindmap-node:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0,87,146,0.2);
+      border-color: #0066cc;
+    }
+
+    .central-node {
+      background: linear-gradient(135deg, #005792, #0066cc);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: none;
+      padding: 1.5rem 2rem;
+    }
+
+    .level-1-node {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-color: #005792;
+      color: #1a237e;
+    }
+
+    .level-2-node {
+      background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+      border-color: #7b1fa2;
+      color: #4a148c;
+    }
+
+    .level-3-node {
+      background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+      border-color: #388e3c;
+      color: #1b5e20;
+    }
+
+    /* Connection Lines */
+    .connection-line {
+      position: absolute;
+      background: #005792;
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    /* Enhanced Popups */
     .popup {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #ffffff;
-      padding: 2rem 2.5rem;
-      z-index: 1000; /* Above overlay and scroll bar */
-      border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-      width: 85%;
-      max-width: 750px;
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 800px;
       max-height: 90vh;
       overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      z-index: 1001;
+      backdrop-filter: blur(10px);
     }
+
     .overlay {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
-      height: 100%;
       width: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 999; /* Above scroll bar, below popup */
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
     }
+
     .close-btn {
-      float: right;
-      font-size: 1.75rem;
-      font-weight: bold;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 2rem;
       cursor: pointer;
       color: #005792;
-      line-height: 1;
-      transition: color 0.2s ease;
-    }
-    .close-btn:hover {
-      color: #003366;
-    }
-    .popup ul, .popup ol {
-      margin-left: 1.5rem;
-      padding-left: 0.5rem;
-    }
-    .popup li {
-      margin-bottom: 0.6rem;
-    }
-    pre {
-      background-color: #f1f3f5;
-      padding: 1rem;
-      border-radius: 6px;
-      overflow-x: auto;
-      border: 1px solid #dee2e6;
-    }
-    code {
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-      font-size: 0.9rem;
-    }
-
-    /* Mindmap Styles */
-    .mindmap-section {
-      text-align: center;
-    }
-    .mindmap {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding: 20px 0; /* Reduced side padding to allow nodes to define width */
-      margin-top: 1.5rem;
-      position: relative;
-      overflow-x: auto; /* Allow horizontal scrolling for wide mindmaps if necessary */
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on touch devices */
-    }
-    .mindmap-node {
-      background-color: #fff;
-      border: 2px solid #005792;
-      padding: 10px 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      text-align: center;
-      margin: 10px;
-      display: inline-block;
-      position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-    .mindmap-node:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      border-color: #003366;
-    }
-    .mindmap-node span {
-      display: block;
-      font-weight: 500;
-      color: #005792;
-    }
-    .mindmap-node span small {
-      display: block;
-      font-size: 0.8em;
-      color: #555;
-      margin-top: 4px;
-    }
-    .central-node {
-      background-color: #005792;
-      color: white;
-      padding: 15px 25px;
-      border: none;
-    }
-    .central-node:hover {
-       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .central-node span, .central-node span small {
-      color: white;
-    }
-    .mindmap ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
       justify-content: center;
-      align-items: flex-start; 
-      flex-wrap: wrap; /* Allow wrapping for children */
-      position: relative;
-    }
-    .mindmap-level-1 > .mindmap-node {
-      margin-top: 40px;
-    }
-    .mindmap-level-1 > .mindmap-node,
-    .mindmap-level-2 > .mindmap-node,
-    .mindmap-level-3 > .mindmap-node {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 20px;
-    }
-    .mindmap-level-2, .mindmap-level-3 {
-      margin-top: 15px;
-      width: 100%; /* Ensure nested ULs can take up space for their flex items */
-    }
-    .mindmap-node > ul::before { /* Vertical connector line from children list to parent node */
-      content: '';
-      position: absolute;
-      left: 50%;
-      bottom: 100%; 
-      width: 2px;
-      height: 20px; 
-      background-color: #005792;
-      transform: translateX(-50%);
-      z-index: -1; /* Put line behind nodes if they overlap */
-    }
-    .level-1-node span { font-size: 1.1em; }
-    .level-2-node { background-color: #e6f0f3; border-color: #5dade2; }
-    .level-2-node span { color: #1a5276; }
-    .level-3-node { background-color: #f0f8ff; border-color: #a9cce3; }
-    .level-3-node span { color: #2471a3; }
-
-    @media (max-width: 768px) {
-      .mindmap ul {
-        flex-direction: column;
-        align-items: center;
-      }
-      .mindmap-level-1 > .mindmap-node,
-      .mindmap-level-2 > .mindmap-node,
-      .mindmap-level-3 > .mindmap-node {
-        margin: 15px 0;
-      }
-      .mindmap-node > ul::before {
-        height: 15px;
-      }
-      header h1 { font-size: 1.75rem; }
-      header p { font-size: 0.9rem; }
-      main { padding: 1.5rem 1rem; width: 95%; }
-      h2 { font-size: 1.5rem; }
-      .popup { padding: 1.5rem; width: 90%; }
+      transition: all 0.3s ease;
     }
 
-    /* Footer */
+    .close-btn:hover {
+      background: rgba(0,87,146,0.1);
+      transform: rotate(90deg);
+    }
+
+    .popup h3 {
+      color: #005792;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .popup h4 {
+      color: #0066cc;
+      font-size: 1.3rem;
+      margin: 1.5rem 0 1rem 0;
+    }
+
+    /* Enhanced Footer */
     footer {
-      text-align: center;
-      padding: 1.5rem;
-      background: #343a40;
+      background: linear-gradient(135deg, #343a40, #495057);
       color: #adb5bd;
-      font-size: 0.9rem;
-      margin-top: auto;
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-top: 4rem;
     }
-    footer p {
-       transition: color 0.3s ease;
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .scroll-indicator {
+        right: 1rem;
+        padding: 0.5rem;
+      }
+
+      .scroll-bar {
+        height: 60px;
+      }
+
+      main {
+        padding: 2rem 1rem;
+      }
     }
-    footer p:hover {
-       color: #ffffff;
+
+    /* Interactive Elements */
+    .hover-effect {
+      transition: all 0.3s ease;
+    }
+
+    .hover-effect:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,87,146,0.15);
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #005792;
+      color: white;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #005792;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Pulsing Animation */
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="scroll-progress-bar-container">
-    <div id="scroll-progress-bar"></div>
+  <!-- Enhanced Scroll Progress -->
+  <div class="scroll-progress">
+    <div class="scroll-progress-bar"></div>
   </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-percentage">0%</div>
+    <div class="scroll-bar">
+      <div class="scroll-thumb"></div>
+    </div>
+  </div>
+
+  <!-- Enhanced Header -->
   <header>
     <h1>DIY Laser-Based Microplastic Detector</h1>
-    <p>An Educational Project for Accessible Environmental Science - Enhanced Edition</p>
+    <p>An Interactive Educational Project for Accessible Environmental Science</p>
   </header>
 
   <main>
+    <!-- Understanding Section -->
     <div class="section">
-      <h2>Understanding Microplastics & Project Goals</h2>
-      <div class="card" onclick="showPopup('popup1')">
-        Project Overview & Enhanced Introduction
-      </div>
-      <div class="card" onclick="showPopup('popup-intro-microplastics')">
-        The Challenge of Microplastic Pollution
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>Scientific Background & Detection Principles</h2>
-      <div class="card" onclick="showPopup('popup2')">
-        Core Scientific Principles of Detection (Scattering & LIF)
-      </div>
-      <div class="card" onclick="showPopup('popup-lr-conventional')">
-        Literature Review: Conventional Detection Methods
-      </div>
-      <div class="card" onclick="showPopup('popup-lr-laser')">
-        Literature Review: Emerging & Laser-Based Techniques
-      </div>
-      <div class="card" onclick="showPopup('popup-rationale-diy')">
-        Why a DIY Approach? The Rationale
-      </div>
-    </div>
-
-    <div class="section"> 
-      <h2>Device Design & Operation</h2>
-      <div class="card" onclick="showPopup('popup-device-architecture')">
-        Detailed Device Architecture
-      </div>
-      <div class="card" onclick="showPopup('popup4')">
-        Operational Methodology & Flowchart Insights
-      </div>
-      <div class="card" onclick="showPopup('popup3')">
-        Circuit Design & Diagram Insights
-      </div>
-      <div class="card" onclick="showPopup('popup5')">
-        Signal Interpretation, Expected Results & Signal Diagrams
-      </div>
-       <div class="card" onclick="showPopup('popup-diy-design')">
-        DIY-Friendly Design & Construction
-      </div>
-    </div>
-
-    <div class="section mindmap-section">
-      <h2>Device Components & Functions (Mindmap View)</h2>
-      <div class="mindmap">
-        <div class="mindmap-node central-node">
-          <span>DIY Microplastic Detector</span>
+      <h2 class="section-title">Understanding Microplastics & Project Goals</h2>
+      <div class="cards-grid">
+        <div class="card hover-effect" onclick="showPopup('popup1')">
+          <div class="card-title">🎯 Project Overview</div>
+          <div class="card-description">Discover the enhanced introduction to our DIY approach for microplastic detection in household water.</div>
         </div>
-        <ul class="mindmap-level-1">
-          <li class="mindmap-node level-1-node">
-            <span>Sample Handling System</span>
-            <ul class="mindmap-level-2">
-              <li class="mindmap-node level-2-node"><span>Water Inlet & Filter<br><small>(Removes large debris)</small></span></li>
-              <li class="mindmap-node level-2-node"><span>Detection Chamber<br><small>(Holds sample for analysis)</small></span></li>
-              <li class="mindmap-node level-2-node"><span>Drainage System<br><small>(Removes analyzed sample)</small></span></li>
-            </ul>
-          </li>
-          <li class="mindmap-node level-1-node">
-            <span>Optical System</span>
-            <ul class="mindmap-level-2">
-              <li class="mindmap-node level-2-node"><span>Laser Diode<br><small>(Light source - e.g., 650nm)</small></span></li>
-              <li class="mindmap-node level-2-node"><span>Photodetector(s)<br><small>(Sense light changes)</small></span>
-                <ul class="mindmap-level-3">
-                  <li class="mindmap-node level-3-node"><span>Scattering Detection</span></li>
-                  <li class="mindmap-node level-3-node"><span>Fluorescence Detection<br><small>(with Nile Red)</small></span></li>
-                  <li class="mindmap-node level-3-node"><span>Transmission Detection</span></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li class="mindmap-node level-1-node">
-            <span>Data Acquisition & Processing</span>
-            <ul class="mindmap-level-2">
-              <li class="mindmap-node level-2-node"><span>Microcontroller (Arduino)<br><small>(Controls system, reads sensors)</small></span></li>
-              <li class="mindmap-node level-2-node"><span>Software<br><small>(Signal processing, analysis)</small></span>
-                <ul class="mindmap-level-3">
-                    <li class="mindmap-node level-3-node"><span>Arduino Code</span></li>
-                    <li class="mindmap-node level-3-node"><span>Python Script</span></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li class="mindmap-node level-1-node">
-            <span>Key Principles</span>
-            <ul class="mindmap-level-2">
-              <li class="mindmap-node level-2-node"><span>Laser Scattering<br><small>(Particle presence/size est.)</small></span></li>
-              <li class="mindmap-node level-2-node"><span>Laser-Induced Fluorescence (LIF)<br><small>(Plastic identification)</small></span></li>
-            </ul>
-          </li>
-        </ul>
+        <div class="card hover-effect" onclick="showPopup('popup-microplastics')">
+          <div class="card-title">🌊 Microplastic Challenge</div>
+          <div class="card-description">Learn about the global challenge of microplastic pollution and its environmental impact.</div>
+        </div>
       </div>
     </div>
 
+    <!-- Scientific Background Section -->
     <div class="section">
-      <h2>Further Insights & Resources</h2>
-      <div class="card" onclick="showPopup('popup7')"> 
-        DIY Kit Components & Materials
+      <h2 class="section-title">Scientific Background & Detection Principles</h2>
+      <div class="cards-grid">
+        <div class="card hover-effect" onclick="showPopup('popup2')">
+          <div class="card-title">🔬 Detection Principles</div>
+          <div class="card-description">Explore laser scattering and laser-induced fluorescence techniques for microplastic detection.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-conventional')">
+          <div class="card-title">📊 Conventional Methods</div>
+          <div class="card-description">Review traditional detection methods and their limitations in accessibility.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-laser')">
+          <div class="card-title">⚡ Laser-Based Techniques</div>
+          <div class="card-description">Discover emerging laser-based detection methods and their advantages.</div>
+        </div>
       </div>
-      <div class="card" onclick="showPopup('popup6')"> 
-        Code & Software Considerations
+    </div>
+
+    <!-- Device Components Mindmap -->
+    <div class="mindmap-container">
+      <h2 class="mindmap-title">🔧 Device Components Overview</h2>
+      <div class="mindmap">
+        <div class="mindmap-node central-node pulse" onclick="showPopup('popup-device-overview')">
+          <div class="tooltip">
+            DIY Microplastic Detector
+            <span class="tooltiptext">Click to learn more about the complete system</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem;">
+          <div class="mindmap-node level-1-node hover-effect" onclick="showPopup('popup-sample-system')">
+            <div class="tooltip">
+              Sample Handling System
+              <span class="tooltiptext">Water filtration and detection chamber</span>
+            </div>
+          </div>
+          <div class="mindmap-node level-1-node hover-effect" onclick="showPopup('popup-optical-system')">
+            <div class="tooltip">
+              Optical System
+              <span class="tooltiptext">Laser and photodetector components</span>
+            </div>
+          </div>
+          <div class="mindmap-node level-1-node hover-effect" onclick="showPopup('popup-data-system')">
+            <div class="tooltip">
+              Data Acquisition
+              <span class="tooltiptext">Microcontroller and processing unit</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card" onclick="showPopup('popup-capabilities-limitations')">
-        Device Capabilities, Limitations & Future Improvements
+    </div>
+
+    <!-- Optical Components Mindmap -->
+    <div class="mindmap-container">
+      <h2 class="mindmap-title">🔍 Optical System Components</h2>
+      <div class="mindmap">
+        <div class="mindmap-node central-node pulse" onclick="showPopup('popup-optical-overview')">
+          <div class="tooltip">
+            Optical Detection System
+            <span class="tooltiptext">Core optical components for detection</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem;">
+          <div class="mindmap-node level-2-node hover-effect" onclick="showPopup('popup-laser-diode')">
+            <div class="tooltip">
+              Laser Diode (650nm)
+              <span class="tooltiptext">Light source for detection</span>
+            </div>
+          </div>
+          <div class="mindmap-node level-2-node hover-effect" onclick="showPopup('popup-photodetectors')">
+            <div class="tooltip">
+              Photodetectors
+              <span class="tooltiptext">Light sensing components</span>
+            </div>
+          </div>
+          <div class="mindmap-node level-2-node hover-effect" onclick="showPopup('popup-optical-filters')">
+            <div class="tooltip">
+              Optical Filters
+              <span class="tooltiptext">Wavelength selection for fluorescence</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card" onclick="showPopup('popup-implications')">
-        Implications of This DIY Device
+    </div>
+
+    <!-- Detection Methods Mindmap -->
+    <div class="mindmap-container">
+      <h2 class="mindmap-title">🎯 Detection Methods</h2>
+      <div class="mindmap">
+        <div class="mindmap-node central-node pulse" onclick="showPopup('popup-detection-methods')">
+          <div class="tooltip">
+            Detection Techniques
+            <span class="tooltiptext">Multiple detection approaches</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem;">
+          <div class="mindmap-node level-3-node hover-effect" onclick="showPopup('popup-scattering')">
+            <div class="tooltip">
+              Laser Scattering
+              <span class="tooltiptext">Particle size and presence detection</span>
+            </div>
+          </div>
+          <div class="mindmap-node level-3-node hover-effect" onclick="showPopup('popup-fluorescence')">
+            <div class="tooltip">
+              Laser-Induced Fluorescence
+              <span class="tooltiptext">Plastic identification with Nile Red</span>
+            </div>
+          </div>
+          <div class="mindmap-node level-3-node hover-effect" onclick="showPopup('popup-transmission')">
+            <div class="tooltip">
+              Transmission Detection
+              <span class="tooltiptext">Light attenuation measurement</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card" onclick="showPopup('popup-paper-conclusion')">
-        Research Paper's Conclusion
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="section">
+      <h2 class="section-title">Implementation & Construction</h2>
+      <div class="cards-grid">
+        <div class="card hover-effect" onclick="showPopup('popup-materials')">
+          <div class="card-title">📦 Materials & Components</div>
+          <div class="card-description">Complete list of DIY-friendly components and materials needed for construction.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-circuit')">
+          <div class="card-title">⚡ Circuit Design</div>
+          <div class="card-description">Detailed circuit diagrams and Arduino integration for the detection system.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-software')">
+          <div class="card-title">💻 Software & Code</div>
+          <div class="card-description">Arduino programming and Python analysis scripts for data processing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results & Analysis Section -->
+    <div class="section">
+      <h2 class="section-title">Results & Analysis</h2>
+      <div class="cards-grid">
+        <div class="card hover-effect" onclick="showPopup('popup-signals')">
+          <div class="card-title">📈 Signal Interpretation</div>
+          <div class="card-description">Understanding the expected results and signal patterns from the detection system.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-limitations')">
+          <div class="card-title">⚠️ Capabilities & Limitations</div>
+          <div class="card-description">Realistic expectations and improvement opportunities for the DIY approach.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-implications')">
+          <div class="card-title">🌍 Environmental Impact</div>
+          <div class="card-description">The broader implications of accessible microplastic detection technology.</div>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Overlay for Popups -->
   <div class="overlay" id="overlay" onclick="hidePopups()"></div>
 
-  <!-- Popups (Enhanced and New) -->
-  <!-- ... (All popup divs from the previous major update go here. Their content is unchanged in this phase) ... -->
-  <!-- Existing popup1 enhanced -->
-<div class="popup" id="popup1">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Project Overview & Enhanced Introduction</h3>
+  <!-- Popup Modals -->
+  <div class="popup" id="popup1">
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>🎯 Project Overview & Enhanced Introduction</h3>
     <p>This project guides you in building your own low-cost, DIY laser-based device to detect microplastic particles in household drinking water. Microplastic pollution is a significant environmental and health concern, with particles found in aquatic environments and drinking water. Traditional detection methods are often expensive and inaccessible for widespread use.</p>
-    <h4>Goal:</h4>
-    <p>The primary objective is to develop a system that is both scientifically sound (using principles of laser scattering and laser-induced fluorescence) and economically viable. It's designed for students, educators, hobbyists, and citizen scientists to make microplastic detection more accessible for educational projects, science fairs, and preliminary environmental assessments.</p>
+    <h4>Primary Goals:</h4>
+    <ul>
+      <li>Develop a scientifically sound yet economically viable detection system</li>
+      <li>Make microplastic detection accessible to students, educators, and citizen scientists</li>
+      <li>Provide hands-on learning experiences in environmental science and technology</li>
+      <li>Enable preliminary environmental assessments at the community level</li>
+    </ul>
     <p>This guide provides a foundational framework for replicating and further developing such a device, promoting hands-on learning and environmental awareness.</p>
-    <p><em>(Original content combined with details from Abstract & Section 1 of the research paper)</em></p>
+  </div>
+
+  <div class="popup" id="popup-microplastics">
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>🌊 The Challenge of Microplastic Pollution</h3>
+    <p>Microplastics, defined as plastic particles smaller than 5 millimeters, have become a pervasive pollutant in global ecosystems. Their presence is confirmed in oceans, freshwater bodies, soil, air, and critically, in the human food chain and drinking water supplies.</p>
+    <h4>Environmental and Health Concerns:</h4>
+    <ul>
+      <li>Potential physical damage from ingestion</li>
+      <li>Chemical leaching from plastic particles</li>
+      <li>Transport of harmful substances and pathogens</li>
+      <li>Bioaccumulation in food chains</li>
+    </ul>
+    <h4>The Detection Gap:</h4>
+    <p>While sophisticated methods like FTIR spectroscopy exist, they are often expensive and require lab settings, limiting widespread monitoring. This project addresses this gap by proposing a low-cost, DIY solution that can be deployed in communities, schools, and homes.</p>
   </div>
 
   <div class="popup" id="popup2">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Core Scientific Principles of Detection</h3>
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>🔬 Core Scientific Principles of Detection</h3>
     <p>The device utilizes two primary optical phenomena to detect and characterize microplastics:</p>
     <h4>1. Laser Scattering:</h4>
-    <p>This technique is based on the principle that particles scatter light in a predictable manner depending on their size, shape, and refractive index. When the laser beam passes through the water sample, microplastic particles will cause the light to scatter. By measuring the intensity and pattern of this scattered light (typically at an angle to the main beam), the presence of suspended particles can be detected. The characteristics of scattering signals can help in:</p>
+    <p>This technique is based on the principle that particles scatter light in a predictable manner depending on their size, shape, and refractive index. When the laser beam passes through the water sample, microplastic particles will cause the light to scatter.</p>
     <ul>
-      <li><strong>Particle Detection & Counting:</strong> Each particle passing through the beam creates a scattering event.</li>
-      <li><strong>Size Estimation (Approximate):</strong> The intensity of scattered light often correlates with particle size.</li>
+      <li><strong>Particle Detection & Counting:</strong> Each particle passing through the beam creates a scattering event</li>
+      <li><strong>Size Estimation:</strong> The intensity of scattered light often correlates with particle size</li>
     </ul>
     <h4>2. Laser-Induced Fluorescence (LIF):</h4>
-    <p>LIF relies on the phenomenon where certain materials absorb light at one wavelength and then emit light at a longer wavelength. Some plastics have intrinsic fluorescence, but more commonly, a fluorescent dye like Nile Red is used. Nile Red selectively binds to plastics. When the laser excites these stained microplastics, they emit a characteristic fluorescent light. This helps in:</p>
+    <p>LIF relies on the phenomenon where certain materials absorb light at one wavelength and then emit light at a longer wavelength. Some plastics have intrinsic fluorescence, but more commonly, a fluorescent dye like Nile Red is used.</p>
     <ul>
-      <li><strong>Microplastic Identification:</strong> Differentiating plastics from other non-fluorescing particles (like sand or inorganic debris).</li>
-      <li><strong>Enhanced Sensitivity & Selectivity:</strong> Making it easier to spot plastic particles.</li>
+      <li><strong>Microplastic Identification:</strong> Differentiating plastics from other non-fluorescing particles</li>
+      <li><strong>Enhanced Sensitivity:</strong> Making it easier to spot plastic particles in complex samples</li>
     </ul>
-    <p>Combining these methods provides a more robust detection system than relying on one alone.</p>
-    <p><em>(Original content expanded with details from Sections 2.2 & 4.1 of the research paper)</em></p>
   </div>
 
-  <div class="popup" id="popup3">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Circuit Design & Diagram Insights</h3>
-    <h4>Basic Circuit Configuration:</h4>
-    <p>The device employs a straightforward circuit centered around a microcontroller like an Arduino. Key components include:</p>
+  <!-- Additional popups for all the mindmap nodes and other sections -->
+  <div class="popup" id="popup-device-overview">
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>🔧 Complete Device Architecture</h3>
+    <p>The DIY Microplastic Detector integrates multiple subsystems to provide comprehensive detection capabilities:</p>
+    <h4>System Integration:</h4>
     <ul>
-      <li><strong>Laser Diode:</strong> Powered and controlled by a digital output pin of the Arduino, allowing it to be turned on/off programmatically.</li>
-      <li><strong>Photodiode(s):</strong> Connected to analog input pins of the Arduino. Photodiodes act as light sensors. One is typically placed directly opposite the laser to measure light transmission/attenuation, and another might be placed at an angle (e.g., 90 degrees) to detect scattered light. If LIF is used, an optical filter might be placed before the fluorescence-detecting photodiode.</li>
-      <li><strong>Resistor(s):</strong> Often used in series with photodiodes to create a voltage divider circuit. This allows changes in light intensity (which change the photodiode's resistance) to be read as changes in voltage by the Arduino's analog pins. A common value is 10kΩ.</li>
+      <li><strong>Modular Design:</strong> Each component can be upgraded independently</li>
+      <li><strong>Open Source:</strong> All designs and code are freely available</li>
+      <li><strong>Scalable:</strong> Can be adapted for different detection requirements</li>
+      <li><strong>Educational:</strong> Designed for learning and experimentation</li>
     </ul>
-    <h4>Conceptual Description of Figure 2 (Simplified Circuit Diagram from Paper):</h4>
-    <p>The research paper's Figure 2 would conceptually illustrate this setup. Imagine a diagram showing:</p>
-    <ul>
-      <li>An Arduino (or similar microcontroller) as the central processing unit.</li>
-      <li>The laser module connected to a digital pin (for control) and power/ground pins.</li>
-      <li>A photodetector for transmitted light, connected to an analog pin, VCC, and Ground, likely with a pull-down or pull-up resistor forming a voltage divider.</li>
-      <li>Optionally, a second photodetector for scattered light, similarly connected to another analog pin.</li>
-      <li>If fluorescence is a key feature, this second detector might be labeled as the "fluorescence detector" and shown with an optical filter in front of it.</li>
-      <li>Power connections (e.g., 5V and GND) from the Arduino to the components.</li>
-    </ul>
-    <p>The Arduino code reads the analog voltage values from the photodiodes. Changes in these values indicate interactions of the laser light with particles in the water sample. The signal is typically read periodically and can be sent to a computer via serial communication for logging and further analysis.</p>
-    <p><em>(Original content expanded with details from Section 3.1.1 and conceptual description of Figure 2 from the research paper)</em></p>
+    <p>The complete system demonstrates how modern sensing technology can be made accessible through thoughtful design and component selection.</p>
   </div>
 
-  <div class="popup" id="popup4">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Operational Methodology & Flowchart Insights</h3>
-    <p>The detection process follows a systematic approach from sample collection to data analysis:</p>
-    <h4>Detailed Steps:</h4>
-    <ol>
-      <li><strong>Sample Preparation and Filtration:</strong>
-          <ul>
-              <li>Collect the household water sample.</li>
-              <li>The sample is poured into the device's inlet and passes through a multi-layered filter system (e.g., mesh screens of decreasing pore sizes). This step is crucial to remove larger particles and debris that could interfere with laser detection, isolating particles in the microplastic size range.</li>
-              <li>If Laser-Induced Fluorescence (LIF) is being used, the water sample is typically stained with a fluorescent dye (like Nile Red) <em>before</em> this filtration step, allowing the dye to bind to plastic particles.</li>
-          </ul>
-      </li>
-      <li><strong>Filling the Detection Chamber:</strong>
-          <ul>
-              <li>Once filtered (and potentially stained), the water is allowed to fill the transparent detection chamber.</li>
-              <li>The chamber is then sealed or valved off to hold the sample statically for analysis, or in some designs, allowed to flow through at a controlled rate.</li>
-          </ul>
-      </li>
-      <li><strong>Data Acquisition:</strong>
-          <ul>
-              <li>The laser diode is activated, shining its beam horizontally through the water sample in the detection chamber.</li>
-              <li>Sensor readings commence. The primary sensor (photodiode opposite the laser) measures transmitted light intensity. A decrease indicates particles absorbing or scattering the beam.</li>
-              <li>A secondary sensor (if used, positioned at an angle) measures scattered light. For LIF, this sensor would also detect fluorescence, possibly through an optical filter to isolate the emission wavelength.</li>
-              <li>The microcontroller (e.g., Arduino) records these signals from the sensor(s) over a defined period or as the sample flows.</li>
-          </ul>
-      </li>
-      <li><strong>Data Analysis:</strong>
-          <ul>
-              <li>The microcontroller sends the raw sensor data (e.g., voltage readings) to a connected computer or processes it onboard.</li>
-              <li>Changes in transmitted light intensity and spikes in scattered light/fluorescence signals are analyzed. These events are correlated with the presence, and potentially concentration and size, of particles.</li>
-              <li>For LIF, a fluorescence signal synchronized with a scattering/attenuation event strongly indicates a microplastic.</li>
-              <li>Software (e.g., Python script) can be used for advanced analysis, counting particle events, estimating size based on signal amplitude/duration, and visualizing results (e.g., real-time plots).</li>
-          </ul>
-      </li>
-      <li><strong>Sample Drainage:</strong> After analysis, a valve or stopper at the bottom of the detection chamber is opened to drain the sample, preparing the device for the next run.</li>
-    </ol>
-    <h4>Conceptual Description of Figure 3 (Methodology Flowchart from Paper):</h4>
-    <p>The research paper's Figure 3 would visually represent these steps. Imagine a flowchart with boxes and arrows depicting:</p>
+  <div class="popup" id="popup-sample-system">
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>💧 Sample Handling System</h3>
+    <h4>Components:</h4>
     <ul>
-      <li>Start: "Collect Water Sample"</li>
-      <li>Process: "Pre-treatment (Optional: Staining with Nile Red)"</li>
-      <li>Process: "Filter Sample (Remove Large Debris)"</li>
-      <li>Process: "Introduce Sample into Detection Chamber"</li>
-      <li>Process: "Activate Laser System"</li>
-      <li>Process: "Acquire Sensor Data (Scattering, Fluorescence, Transmission)" - this might be a loop for continuous measurement.</li>
-      <li>Decision: "Particle Detected? (Based on signal thresholds)"
-          <ul>
-              <li>Yes: "Record Event (Count, Size Estimate, Fluorescence intensity)"</li>
-              <li>No: Continue acquisition or end.</li>
-          </ul>
-      </li>
-      <li>Process: "Analyze Data (Correlate signals, Quantify)"</li>
-      <li>Process: "Display/Log Results"</li>
-      <li>Process: "Drain Sample"</li>
-      <li>End</li>
+      <li><strong>Water Inlet:</strong> Controlled entry point for samples</li>
+      <li><strong>Multi-stage Filtration:</strong> Removes debris while preserving microplastics</li>
+      <li><strong>Detection Chamber:</strong> Transparent chamber for optical analysis</li>
+      <li><strong>Flow Control:</strong> Valves and tubes for sample management</li>
     </ul>
-    <p><em>(Original content significantly expanded with details from Section 3.2 and conceptual description of Figure 3 from the research paper)</em></p>
+    <h4>Design Considerations:</h4>
+    <p>The sample handling system must balance filtration efficiency with detection sensitivity, ensuring that microplastics are concentrated while larger debris is removed.</p>
   </div>
 
-  <div class="popup" id="popup5">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Signal Interpretation, Expected Results & Signal Diagrams</h3>
-    <p>The raw data from the photodiodes (typically voltage levels) needs careful interpretation to identify microplastic events.</p>
-    <h4>Expected Outcomes from Optical Sensing:</h4>
-    <p><strong>1. Light Scattering Signals:</strong></p>
+  <div class="popup" id="popup-optical-system">
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>🔍 Optical Detection System</h3>
+    <h4>Key Components:</h4>
     <ul>
-      <li><strong>Particle Detection and Counting:</strong> Each microplastic particle passing through the laser beam will cause a transient increase in the light detected by the scattering sensor (or a decrease in the transmission sensor). Each discrete peak/dip in the signal waveform corresponds to a particle. Counting these events over a known sample volume gives an estimate of particle concentration.</li>
-      <li><strong>Size Estimation (Approximate):</strong> The intensity (amplitude) and duration of the scattered light pulse are generally related to particle size. Larger particles tend to produce stronger and potentially longer signals. Calibration with known-sized particles is needed for even approximate sizing.</li>
+      <li><strong>Laser Source:</strong> Provides coherent light for detection</li>
+      <li><strong>Photodetectors:</strong> Convert light signals to electrical signals</li>
+      <li><strong>Optical Filters:</strong> Isolate specific wavelengths for analysis</li>
+      <li><strong>Beam Alignment:</strong> Ensures optimal light path geometry</li>
     </ul>
-    <p><strong>2. Laser-Induced Fluorescence (LIF) Signals (if using dye like Nile Red):</strong></p>
-    <ul>
-      <li><strong>Microplastic Identification:</strong> For samples treated with a dye like Nile Red, a strong fluorescence signal synchronized with a scattering event is the primary indicator of a microplastic. This helps distinguish plastics from non-fluorescing inorganic particles or undyed organic matter.</li>
-      <li><strong>Polymer Type Indication (Limited):</strong> While not definitive with a single dye, variations in fluorescence intensity or decay characteristics might offer clues for different plastic types, though this is an advanced feature. The primary goal is presence/absence.</li>
-    </ul>
-    <h4>Conceptual Description of Figure 4 (Expected Signals from Paper):</h4>
-    <p>The research paper's Figure 4 would conceptually illustrate what these signals might look like over time. Imagine a graph with time on the x-axis and signal intensity (voltage) on the y-axis:</p>
-    <ul>
-      <li><strong>Baseline:</strong> A relatively stable line representing the sensor reading when no particles are passing through the laser.</li>
-      <li><strong>Scattering Signal:</strong> Sharp peaks rising from the baseline each time a particle passes through the detection zone and scatters light towards the scattering detector. The height and width of the peak could correlate to particle size/characteristics.</li>
-      <li><strong>Fluorescence Signal (if applicable):</strong> Similar sharp peaks, but these should ideally be synchronized (occur at the same time) as the scattering peaks if the particle is a stained microplastic. The presence of a fluorescence peak alongside a scattering peak strongly suggests a microplastic. Non-plastic particles might cause a scattering peak but no corresponding fluorescence peak.</li>
-      <li><strong>Transmission Signal (Optional View):</strong> If monitoring the light transmitted directly through the sample,
-      particles would cause dips or troughs in the signal as they block or scatter light away from the direct path. These dips would also be synchronized with scattering/fluorescence peaks.</li>
-    </ul>
-    <p>Sudden spikes or drops in voltage from the baseline are key indicators. Software algorithms can be designed to detect these events, apply thresholds to filter noise, and count them.</p>
-    <p><em>(Original content expanded with details from Section 4.1 and conceptual description of Figure 4 from the research paper)</em></p>
+    <h4>Performance Characteristics:</h4>
+    <p>The optical system is designed for maximum sensitivity while maintaining cost-effectiveness and ease of construction.</p>
   </div>
 
-  <div class="popup" id="popup6">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Code & Software Considerations</h3>
-    <p>The software component is crucial for controlling the device and analyzing the data. It typically involves two parts:</p>
-    <h4>1. Microcontroller Code (e.g., Arduino):</h4>
-    <p>Written in C/C++ (Arduino programming language). Its main tasks are:</p>
+  <div class="popup" id="popup-data-system">
+    <button class="close-btn" onclick="hidePopups()">&times;</button>
+    <h3>💻 Data Acquisition & Processing</h3>
+    <h4>Hardware Components:</h4>
     <ul>
-      <li>Initializing and controlling the laser diode (turning it on/off).</li>
-      <li>Periodically reading analog voltage values from the photodiode(s).</li>
-      <li>Optionally, performing basic signal conditioning or thresholding.</li>
-      <li>Transmitting the raw or minimally processed data to a computer via Serial communication (USB).</li>
+      <li><strong>Arduino Microcontroller:</strong> Real-time data collection and control</li>
+      <li><strong>Analog-to-Digital Conversion:</strong> Converts sensor signals to digital data</li>
+      <li><strong>Serial Communication:</strong> Data transfer to computer systems</li>
+      <li><strong>Power Management:</strong> Efficient power usage for portable operation</li>
     </ul>
-    <pre><code>// Example Arduino Snippet (Conceptual)
-int laserPin = 3;      // Digital pin for laser control
-int scatterPin = A0;   // Analog pin for scattering photodiode
-int fluorescencePin = A1; // Analog pin for fluorescence photodiode
-
-void setup() {
-  pinMode(laserPin, OUTPUT);
-  Serial.begin(9600); // Initialize serial communication
-  digitalWrite(laserPin, LOW); // Keep laser off initially
-}
-
-void loop() {
-  digitalWrite(laserPin, HIGH); // Turn laser on
-  delay(10); // Short delay for sensor stabilization
-
-  int scatterSignal = analogRead(scatterPin);
-  int fluorescenceSignal = analogRead(fluorescencePin);
-
-  // Send data: e.g., "S:value,F:value"
-  Serial.print("S:");
-  Serial.print(scatterSignal);
-  Serial.print(",F:");
-  Serial.println(fluorescenceSignal);
-  
-  // Laser can be kept on or pulsed depending on design
-  // digitalWrite(laserPin, LOW); 
-  delay(100); // Adjust delay for desired sampling rate
-}</code></pre>
-    <h4>2. Computer-Side Software (e.g., Python):</h4>
-    <p>Runs on a connected PC or a single-board computer like a Raspberry Pi. Its tasks include:</p>
-    <ul>
-      <li>Reading data from the serial port (sent by the Arduino).</li>
-      <li>Parsing the incoming data.</li>
-      <li>Performing more advanced signal processing (e.g., noise filtering, peak detection).</li>
-      <li>Applying algorithms to count particles and estimate characteristics.</li>
-      <li>Correlating scattering and fluorescence signals to identify microplastics.</li>
-      <li>Visualizing data (e.g., real-time plots of signal intensity, histograms of particle counts/sizes).</li>
-      <li>Logging data to files for later analysis.</li>
-    </ul>
-    <p>The software is intended to be open-source and written in beginner-friendly languages to encourage modification and improvement by the community. Python is a common choice due to its extensive libraries for data analysis and visualization (e.g., Matplotlib, NumPy, Pandas).</p>
-    <p><em>(Original content expanded with details from Section 3.4 and general best practices for such DIY projects)</em></p>
-  </div>
-
-  <div class="popup" id="popup7">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>DIY Kit Components & Materials</h3>
-    <p>The following is a general list of components. Specific choices may vary based on availability and desired sensitivity.</p>
-    <h4>Core Electronics & Optics:</h4>
-    <ul>
-      <li><strong>Microcontroller:</strong> Arduino UNO/Nano or similar (e.g., ESP32 for WiFi capabilities).</li>
-      <li><strong>Laser Diode Module:</strong> Typically a red laser (e.g., 650nm, 5mW). Green lasers can also be used. Ensure it's a module with built-in driver if possible.</li>
-      <li><strong>Photodiode(s):</strong> Sensitive photodiodes like BPW34, LDRs (Light Dependent Resistors - less sensitive but cheaper), or other silicon photodiodes. At least one, preferably two (for scattering/fluorescence).</li>
-      <li><strong>Resistors:</strong> Appropriate values for photodiode circuits (e.g., 10kΩ for voltage dividers).</li>
-      <li><strong>Jumper Wires & Breadboard:</strong> For prototyping and connections.</li>
-      <li><strong>USB Cable:</strong> For Arduino-PC connection (power and data).</li>
-    </ul>
-    <h4>Sample Handling & Chamber:</h4>
-    <ul>
-      <li><strong>Transparent Tubing/Cuvette:</strong> For the detection chamber (e.g., acrylic tube, glass vial, or custom 3D printed chamber). Must be clear for the laser.</li>
-      <li><strong>Materials for Filter System:</strong> Mesh screens of various pore sizes (e.g., 20-100 microns), or parts to adapt a commercial water filter cartridge. PVC pipes or 3D printed parts for housing.</li>
-      <li><strong>Tubing and Connectors:</strong> For water flow if not a static sample. Small stoppers or valves for inlet/outlet.</li>
-    </ul>
-    <h4>Optional (for Enhanced Detection - LIF):</h4>
-    <ul>
-      <li><strong>Nile Red Dye:</strong> For staining microplastics to induce fluorescence. (Handle with care as per MSDS).</li>
-      <li><strong>Optical Filter(s):</strong> If using LIF, a bandpass or longpass filter to isolate fluorescence emission wavelength and block scattered laser light from reaching the fluorescence detector.</li>
-    </ul>
-    <h4>General Lab/Workshop Materials:</h4>
-    <ul>
-      <li>Enclosure materials (e.g., project box, 3D printed case).</li>
-      <li>Tools for assembly (soldering iron if making permanent, screwdrivers, etc.).</li>
-      <li>Sample collection bottles/containers.</li>
-    </ul>
-    <p>The emphasis is on low-cost, readily available components to make the project accessible.</p>
-    <p><em>(Original content reviewed and expanded based on details from Sections 3.1, 3.4, and general knowledge of such DIY projects)</em></p>
-  </div>
-
-  <div class="popup" id="popup-intro-microplastics">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>The Challenge of Microplastic Pollution</h3>
-    <p>Microplastics, defined as plastic particles smaller than 5 millimeters, have become a pervasive pollutant in global ecosystems. Their presence is confirmed in oceans, freshwater bodies, soil, air, and critically, in the human food chain and drinking water supplies.</p>
-    <h4>Environmental and Health Concerns:</h4>
-    <p>The potential health impacts of microplastic ingestion are a growing area of research, raising concerns about physical damage, chemical leaching, and the transport of harmful substances. There's an urgent need for effective, accessible, and affordable methods to detect and quantify microplastics, particularly in drinking water.</p>
-    <h4>The Detection Gap:</h4>
-    <p>While sophisticated methods like FTIR spectroscopy exist, they are often expensive and require lab settings, limiting widespread monitoring. This project addresses this gap by proposing a low-cost, DIY solution.</p>
-    <p><em>(Derived from Abstract & Section 1 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-lr-conventional">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Literature Review: Conventional Detection Methods</h3>
-    <p>Traditional microplastic analysis methods are categorized into physical and chemical techniques:</p>
-    <ul>
-      <li><strong>Visual Inspection (Microscopy):</strong> The most straightforward approach for enumeration, sizing, and morphological characterization. However, it's labor-intensive, prone to error, limited to larger microplastics, and cannot definitively identify polymer types.</li>
-      <li><strong>Fourier-Transform Infrared (FTIR) Spectroscopy:</strong> Identifies polymers based on their unique infrared absorption spectra. Considered a gold standard for identification.</li>
-      <li><strong>Raman Spectroscopy:</strong> Uses inelastic scattering of monochromatic light to provide a chemical fingerprint. Also a gold standard method.</li>
-      <li><strong>Pyrolysis-Gas Chromatography-Mass Spectrometry (Py-GC/MS):</strong> Provides detailed chemical information about polymer composition but is destructive.</li>
-    </ul>
-    <h4>Limitations of Conventional Methods:</h4>
-    <p>While accurate, FTIR, Raman, and Py-GC/MS involve high equipment costs, complex sample preparation, specialized training, and long analysis times, making them impractical for routine, on-site, or community-level monitoring.</p>
-    <p><em>(Derived from Section 2.1 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-lr-laser">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Literature Review: Emerging & Laser-Based Techniques</h3>
-    <p>The need for rapid, cost-effective, and field-deployable methods has driven innovation in detection techniques, with laser-based methods showing significant promise:</p>
-    <ul>
-      <li><strong>Laser-Induced Breakdown Spectroscopy (LIBS):</strong> Uses a high-energy laser pulse to create plasma on a material's surface. Emitted light is analyzed for elemental composition, identifying polymers by their spectral signatures. It's rapid and minimally destructive.</li>
-      <li><strong>Laser Direct Infrared (LDIR) Spectroscopy:</strong> Employs a quantum cascade laser to rapidly scan samples, identifying particles by IR absorption spectra, similar to FTIR but much faster. Offers high-throughput, automated analysis.</li>
-      <li><strong>Laser Scattering Techniques:</strong> Based on how particles scatter light depending on size, shape, and refractive index. Illuminating a water sample with a laser and measuring scattered light can detect suspended particles. While not sufficient alone for differentiation, it's useful for initial screening.</li>
-      <li><strong>Laser-Induced Fluorescence (LIF):</strong> Relies on intrinsic fluorescence of some polymers or using fluorescent dyes (e.g., Nile Red) that selectively bind to plastics. Excited by a laser, stained microplastics emit fluorescence at specific wavelengths, allowing detection and quantification. LIF offers high sensitivity and selectivity.</li>
-    </ul>
-    <p><em>(Derived from Section 2.2 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-rationale-diy">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Why a DIY Approach? The Rationale</h3>
-    <p>The development of a low-cost, DIY microplastic detection device is driven by several key factors:</p>
-    <ul>
-      <li><strong>Democratizing Environmental Monitoring:</strong> Making tools available to a wider audience beyond specialized labs.</li>
-      <li><strong>Empowering Citizen Scientists, Students, and Communities:</strong> Enabling them to assess local water quality and participate in data collection.</li>
-      <li><strong>Educational Value:</strong> Providing hands-on learning experiences in science, technology, engineering, and math (STEM).</li>
-      <li><strong>Lowering Barriers to Scientific Investigation:</strong> Using affordable and readily available components (laser diodes, photodiodes, microcontrollers).</li>
-      <li><strong>Providing Preliminary Data:</strong> Offering valuable initial data on microplastic contamination even if not as precise as lab-grade equipment.</li>
-      <li><strong>Fostering Awareness:</strong> Increasing understanding and engagement with the microplastic pollution problem.</li>
-    </ul>
-    <p>This approach aims to create a system that is both scientifically sound for its purpose and economically viable for broader use.</p>
-    <p><em>(Derived from Section 2.3 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-device-architecture">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Detailed Device Architecture</h3>
-    <p>The proposed device has a modular and adaptable architecture:</p>
-    <h4>1. Sample Handling System:</h4>
-    <ul>
-      <li><strong>Water Inlet and Filter System:</strong> A top inlet for pouring the sample. A multi-layered filter section (e.g., mesh screens of decreasing pore size or commercial filter cartridge) removes large debris, ensuring only microplastic-sized particles reach the detection chamber.</li>
-      <li><strong>Detection Chamber:</strong> A transparent chamber (e.g., acrylic or glass) to hold the filtered water sample statically for analysis. It features a laser emitter on one side and a photodetector on the opposite side (for transmission) and potentially another at an angle (for scattering/fluorescence).</li>
-      <li><strong>Drainage:</strong> A stopper or valve at the bottom for draining the analyzed sample.</li>
-    </ul>
-    <h4>2. Data Acquisition and Processing System:</h4>
-    <ul>
-      <li><strong>Microcontroller:</strong> An Arduino or similar microcontroller to control the laser and read data from the sensor(s).</li>
-      <li><strong>Computer/Raspberry Pi (Optional):</strong> For more complex data analysis, user interface, and data logging.</li>
-    </ul>
-    <p><em>(Derived from Section 3.1 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-diy-design">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>DIY-Friendly Design & Construction</h3>
-    <p>The device is designed with accessibility and ease of assembly in mind:</p>
-    <ul>
-      <li><strong>Component Selection:</strong> All components are chosen to be low-cost and readily available. This includes common laser diodes, photodiodes, microcontrollers (like Arduino), resistors, and basic wiring. The filter system can be adapted from household water filters or constructed from simple mesh materials.</li>
-      <li><strong>Construction:</strong> The device is designed for easy assembly. The filter housing and detection chamber can be constructed from readily available materials like PVC pipes, acrylic tubes, or custom 3D-printed parts. Stoppers can be simple rubber stoppers or basic valves.</li>
-      <li><strong>Software:</strong> The control and analysis software is intended to be open-source and written in beginner-friendly languages like Python or the Arduino programming language (C/C++). This allows for community contributions and modifications.</li>
-    </ul>
-    <p>The aim is to make the entire process from sourcing parts to assembling and operating the device manageable for individuals with basic DIY skills.</p>
-    <p><em>(Derived from Section 3.4 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-capabilities-limitations">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Device Capabilities, Limitations & Future Improvements</h3>
-    <h4>Advantages of the DIY Approach:</h4>
-    <ul>
-      <li><strong>Cost-Effectiveness:</strong> Significantly cheaper than professional equipment.</li>
-      <li><strong>Educational Value:</strong> Excellent for learning about optics, electronics, programming, and environmental science.</li>
-      <li><strong>Accessibility:</strong> Promotes public engagement and awareness.</li>
-      <li><strong>On-site Screening:</strong> Allows for preliminary, immediate feedback on water samples.</li>
-    </ul>
-    <h4>Limitations:</h4>
-    <ul>
-      <li><strong>Sensitivity and Detection Limit:</strong> May struggle with very small microplastics (&lt;20 µm) or nanoplastics due to weaker signals and noise.</li>
-      <li><strong>Specificity and Interference:</strong> While Nile Red helps, some organic matter might fluoresce, causing false positives.</li>
-      <li><strong>Polymer Identification:</strong> Primarily for detection and quantification, not detailed polymer identification.</li>
-      <li><strong>Quantitative Accuracy:</strong> Provides estimates rather than definitive counts; results depend on calibration and sample consistency.</li>
-      <li><strong>Sample Throughput:</strong> May be lower than industrial systems.</li>
-    </ul>
-    <h4>Future Improvements:</h4>
-    <ul>
-      <li>Using more sensitive (but still affordable) detectors.</li>
-      <li>Optimizing the optical path for better signal collection.</li>
-      <li>Researching more selective staining agents.</li>
-      <li>Employing advanced signal processing or machine learning for better specificity.</li>
-      <li>Exploring integration of miniature spectrometers for basic polymer type insights.</li>
-      <li>Optimizing pump speed and chamber design for higher throughput.</li>
-    </ul>
-    <p><em>(Derived from Section 4.2 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-implications">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Implications of This DIY Device</h3>
-    <p>This low-cost, DIY microplastic detection device, while not a replacement for high-precision laboratory analysis, represents a significant step towards democratizing environmental monitoring. It can serve as an invaluable tool for:</p>
-    <ul>
-      <li><strong>Educational Settings:</strong> Enabling hands-on learning experiences in schools and universities, fostering scientific inquiry and environmental stewardship by allowing students to build and use the device.</li>
-      <li><strong>Citizen Science:</strong> Empowering communities and individuals to collect local data on microplastic pollution. This data can contribute to broader datasets, raise local awareness, and inform local action.</li>
-      <li><strong>Preliminary Screening:</strong> Providing a quick and affordable method for initial assessment of water samples. This can help identify areas of concern that may warrant more detailed laboratory analysis, optimizing resource allocation.</li>
-    </ul>
-    <p>By making microplastic detection more accessible, this project aims to contribute to a greater understanding of the extent of microplastic pollution and encourage proactive measures to mitigate its impact.</p>
-    <p><em>(Derived from Section 4.3 of the research paper)</em></p>
-  </div>
-
-  <div class="popup" id="popup-paper-conclusion">
-    <span class="close-btn" onclick="hidePopups()">&times;</span>
-    <h3>Research Paper's Conclusion</h3>
-    <p>The research paper presents a conceptual design for a low-cost, DIY laser-based device for detecting microplastics in household drinking water. By integrating laser scattering and laser-induced fluorescence (LIF), it offers an accessible alternative to expensive lab techniques.</p>
-    <p>Key components include a sample handling system, an optical system (low-power laser, optics, photodetectors), and a microcontroller-based data acquisition unit. The methodology involves sample pre-treatment (optional Nile Red staining), calibration, and data analysis to count particles, estimate size, and differentiate microplastics.</p>
-    <p>While acknowledging limitations in sensitivity and specificity compared to advanced instruments, this DIY approach offers significant advantages in cost-effectiveness, educational value, and accessibility. It empowers individuals and communities to monitor microplastic pollution, fostering awareness and contributing to understanding this environmental issue.</p>
-    <p>The proposed design serves as a foundational framework for further development and optimization, aiming to contribute to a more informed global effort to combat microplastic contamination.</p>
-    <p><em>(Derived from Section 5 of the research paper)</em></p>
-  </div>
-
-
-  <footer>
-    <p>&copy; 2024 DIY Microplastic Detector Project. Content based on open research.</p>
-  </footer>
-
-  <script>
-    // Popup script (existing)
-    function showPopup(id) {
-      document.getElementById('overlay').style.display = 'block';
-      var popup = document.getElementById(id);
-      if (popup) {
-        popup.style.display = 'block';
-      }
-    }
-    function hidePopups() {
-      document.getElementById('overlay').style.display = 'none';
-      var popups = document.querySelectorAll('.popup');
-      popups.forEach(popup => popup.style.display = 'none');
-    }
-    document.addEventListener('keydown', function(event) {
-      if (event.key === "Escape") {
-        hidePopups();
-      }
-    });
-
-    // Scroll Progress Indicator Script
-    window.addEventListener('scroll', function() {
-      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      var scrolled = (scrollHeight > 0) ? (scrollTop / scrollHeight) * 100 : 0; // Avoid division by zero if scrollHeight is 0
-      
-      var progressBar = document.getElementById('scroll-progress-bar');
-      if (progressBar) {
-        progressBar.style.width = scrolled + '%';
-      }
-    });
-  </script>
-</body>
-</html>
+    <h4>Software Features:</h4>
