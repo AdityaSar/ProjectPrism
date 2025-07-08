@@ -324,9 +324,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 2rem;
+      gap: 2rem; /* Initial gap */
       margin: 2rem 0;
       flex-wrap: wrap;
+    }
+     /* More specific gap for levels with more items to prevent overlap */
+    .mindmap-level:nth-of-type(2) { /* Level 1 nodes from node-main (laser, optics, etc.) */
+        gap: 4rem; /* Further increased gap for the busiest level */
+    }
+    .mindmap-level:nth-of-type(3) { /* Level 2 nodes from node-optics (lens1, filter1, etc.) */
+        gap: 3.5rem; /* Slightly increased gap */
+    }
+    .mindmap-level:nth-of-type(4) { /* Level 2/3 nodes from node-mcu (power, display, etc.) */
+        gap: 3.5rem; /* Slightly increased gap */
     }
 
     .mindmap-node {
@@ -340,7 +350,7 @@
       backdrop-filter: blur(10px);
       z-index: 10;
       text-align: center;
-      min-width: 150px;
+      min-width: 170px; /* Increased min-width for better text flow */
     }
 
     .mindmap-node:hover {
@@ -1908,34 +1918,71 @@
     function updateActiveNavItem() {
       let currentSectionId = '';
       const offset = window.innerHeight * 0.4; // 40% from the top
+      // console.log(`DEBUG: ScrollY: ${window.pageYOffset.toFixed(2)}, Offset Trigger Point: ${offset.toFixed(2)}, Window Height: ${window.innerHeight}`);
 
       sections.forEach(section => {
-        const sectionTop = section.offsetTop - offset;
-        const sectionBottom = sectionTop + section.offsetHeight;
-        if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
+        const sectionTrueTop = section.offsetTop;
+        const detectionPoint = sectionTrueTop - offset; // Point at which section should become active
+        const sectionEffectiveBottom = detectionPoint + section.offsetHeight; // End of this section's "detection zone"
+
+        // console.log(`DEBUG: Section: ${section.id}, True Top: ${sectionTrueTop.toFixed(2)}, Detection Pt: ${detectionPoint.toFixed(2)}, Effective Bottom: ${sectionEffectiveBottom.toFixed(2)}`);
+        
+        if (window.pageYOffset >= detectionPoint && window.pageYOffset < sectionEffectiveBottom) {
           currentSectionId = section.id;
         }
       });
       
-      // If no section is "current" (e.g., at the very bottom of the page beyond the last section's trigger point),
-      // keep the last one active or default to the first if at the very top.
-      if (!currentSectionId && window.pageYOffset + window.innerHeight >= document.documentElement.scrollHeight - 10) { // Near bottom
-          const lastSection = sections[sections.length -1];
-          if(lastSection) currentSectionId = lastSection.id;
-      } else if (!currentSectionId && window.pageYOffset < offset) { // Near top
-          const firstSection = sections[0];
-          if(firstSection) currentSectionId = firstSection.id;
+      if (!currentSectionId) {
+        if (window.pageYOffset + window.innerHeight >= document.documentElement.scrollHeight - 20) {
+            if (sections.length > 0) {
+                currentSectionId = sections[sections.length - 1].id;
+                // console.log("DEBUG: Fallback to LAST section (at page bottom):", currentSectionId);
+            }
+        } 
+        else if (sections.length > 0 && window.pageYOffset < (sections[0].offsetTop - offset + (sections[0].offsetHeight / 2) ) ) { 
+            // More lenient check for the first section: if we are above the halfway point of its detection zone from top
+            currentSectionId = sections[0].id;
+            // console.log("DEBUG: Fallback to FIRST section (at page top or before first detection):", currentSectionId);
+        } else {
+            for (let i = sections.length - 1; i >= 0; i--) {
+                if (window.pageYOffset >= (sections[i].offsetTop - offset)) {
+                    currentSectionId = sections[i].id;
+                    // console.log("DEBUG: Fallback - closest section from bottom up whose detection point is passed:", currentSectionId);
+                    break;
+                }
+            }
+        }
+      }
+      if (!currentSectionId && sections.length > 0 && window.pageYOffset < offset ) {
+          currentSectionId = sections[0].id; // Default to first if all else fails and near top
+          // console.log("DEBUG: Fallback to FIRST section (very top, final check if all else failed):", currentSectionId);
       }
 
+      // console.log('DEBUG: Final determined currentSectionId:', currentSectionId);
 
       navItems.forEach(item => {
         const tooltip = item.querySelector('.nav-tooltip');
         if (tooltip) {
-            const sectionIdToMatch = tooltip.textContent.toLowerCase().replace(/\s+/g, '-');
-             // Special case for header/overview
-            if ((currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch ==='header')) || sectionIdToMatch === currentSectionId) {
-                 item.classList.add('active');
+            const tooltipText = tooltip.textContent;
+            let sectionIdToMatch = tooltipText.toLowerCase();
+            sectionIdToMatch = sectionIdToMatch.replace(/\s*&\s*/g, '-and-'); 
+            sectionIdToMatch = sectionIdToMatch.replace(/[\s_]+/g, '-');    
+            sectionIdToMatch = sectionIdToMatch.replace(/[^\w-]+/g, '');   
+            
+            // console.log(`DEBUG: NavItem Tooltip: "${tooltipText}", Transformed ID for matching: "${sectionIdToMatch}"`);
+            
+            let isActive = false;
+            if (currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch === 'header')) {
+                 isActive = true;
+            } else if (sectionIdToMatch === currentSectionId) {
+                 isActive = true;
+            }
+
+            if (isActive) {
+                // console.log(`DEBUG: ACTIVATING nav item for: ${sectionIdToMatch} (current page section: ${currentSectionId})`);
+                item.classList.add('active');
             } else {
+                // console.log(`DEBUG: DEACTIVATING nav item for: ${sectionIdToMatch} (current page section: ${currentSectionId})`);
                 item.classList.remove('active');
             }
         }
@@ -1967,11 +2014,10 @@
         popup.style.display = 'block';
         overlay.style.display = 'block';
         currentPopup = popup;
-        // Animate popup appearance (optional)
         setTimeout(() => {
-          if(currentPopup) currentPopup.style.opacity = 1; // Assuming CSS transition for opacity
+          if(currentPopup) currentPopup.style.opacity = 1; 
         }, 10);
-         document.body.style.overflow = 'hidden'; // Prevent background scrolling
+         document.body.style.overflow = 'hidden'; 
       } else {
         console.error("Popup or overlay not found for ID:", popupId);
       }
@@ -1979,15 +2025,14 @@
 
     function closePopup() {
       if (currentPopup && overlay) {
-        currentPopup.style.display = 'none'; // Or animate out
+        currentPopup.style.display = 'none'; 
         overlay.style.display = 'none';
-        currentPopup.style.opacity = 0; // Assuming CSS transition for opacity
+        currentPopup.style.opacity = 0; 
         currentPopup = null;
-        document.body.style.overflow = ''; // Restore background scrolling
+        document.body.style.overflow = ''; 
       }
     }
     
-    // Close popup with Escape key
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && currentPopup) {
             closePopup();
@@ -2004,7 +2049,6 @@
         const mindmapRect = mindmapConnectionsSVG.getBoundingClientRect();
         const elemRect = elem.getBoundingClientRect();
         
-        // Calculate center relative to the SVG container
         const x = elemRect.left + elemRect.width / 2 - mindmapRect.left;
         const y = elemRect.top + elemRect.height / 2 - mindmapRect.top;
         
@@ -2028,7 +2072,7 @@
 
     function drawAllMindmapConnections() {
         if (!mindmapConnectionsSVG) return;
-        mindmapConnectionsSVG.innerHTML = ''; // Clear existing lines
+        mindmapConnectionsSVG.innerHTML = ''; 
 
         const connections = [
             { from: 'node-main', to: 'node-laser' },
@@ -2036,13 +2080,13 @@
             { from: 'node-main', to: 'node-flowcell' },
             { from: 'node-main', to: 'node-detector' },
             { from: 'node-main', to: 'node-mcu' },
-            { from: 'node-optics', to: 'node-lens1' },    // Main to Level 1
-            { from: 'node-optics', to: 'node-filter1' },  // Main to Level 1
-            { from: 'node-optics', to: 'node-lens2' },    // Main to Level 1
-            { from: 'node-optics', to: 'node-filter2' },  // Main to Level 1
-            { from: 'node-mcu', to: 'node-power' },       // Level 1 to Level 2/3
-            { from: 'node-mcu', to: 'node-display' },     // Level 1 to Level 2/3
-            { from: 'node-mcu', to: 'node-interface' }    // Level 1 to Level 2/3
+            { from: 'node-optics', to: 'node-lens1' },
+            { from: 'node-optics', to: 'node-filter1' },
+            { from: 'node-optics', to: 'node-lens2' },
+            { from: 'node-optics', to: 'node-filter2' },
+            { from: 'node-mcu', to: 'node-power' },
+            { from: 'node-mcu', to: 'node-display' },
+            { from: 'node-mcu', to: 'node-interface' }
         ];
 
         connections.forEach(conn => {
@@ -2058,7 +2102,6 @@
         }
     }
 
-
     // --- Event Listeners ---
     window.addEventListener('scroll', () => {
       updateScrollProgress();
@@ -2070,38 +2113,33 @@
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             drawAllMindmapConnections();
-            updateActiveNavItem(); // Recalculate section positions on resize
-        }, 250); // Debounce resize event
+            updateActiveNavItem(); 
+        }, 250); 
     });
 
-    // Initial setup
     document.addEventListener('DOMContentLoaded', () => {
       initParticles();
       updateScrollProgress();
       updateActiveNavItem();
       drawAllMindmapConnections();
 
-      // Attach event listeners to nav items (if not already via onclick)
       navItems.forEach(item => {
           const tooltip = item.querySelector('.nav-tooltip');
-          if (tooltip && !item.hasAttribute('onclick')) { // Avoid double if already has onclick
+          if (tooltip && !item.hasAttribute('onclick')) { 
               const sectionId = tooltip.textContent.toLowerCase().replace(/\s+/g, '-');
               item.addEventListener('click', () => scrollToSection(sectionId === 'overview' ? 'header' : sectionId));
           }
       });
       
-      // Add listeners for cards and flowchart steps to open popups
-      // This is more robust than just relying on onclick in HTML
       const popupTriggers = document.querySelectorAll('[onclick^="showPopup"]');
       popupTriggers.forEach(trigger => {
           const onclickAttr = trigger.getAttribute('onclick');
-          // Extract popupId from the onclick attribute: showPopup('popupId')
           const popupIdMatch = onclickAttr.match(/showPopup\('([^']+)'\)/);
           if (popupIdMatch && popupIdMatch[1]) {
               const popupId = popupIdMatch[1];
-              trigger.removeAttribute('onclick'); // Remove inline onclick
+              trigger.removeAttribute('onclick'); 
               trigger.addEventListener('click', () => showPopup(popupId));
-              trigger.style.cursor = 'pointer'; // Ensure cursor indicates clickable
+              trigger.style.cursor = 'pointer'; 
           }
       });
     });
