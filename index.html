@@ -300,7 +300,7 @@
       border: 1px solid rgba(255,255,255,0.2);
       margin: 4rem 0;
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* Changed from visible to hidden for better containment if needed */
     }
 
     .mindmap-title {
@@ -313,8 +313,8 @@
     }
 
     .mindmap {
-      position: relative;
-      min-height: 600px;
+      position: relative; /* This will be the reference for absolute positioning of SVG */
+      min-height: 600px; /* Ensure it has some height */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -324,19 +324,21 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 2rem; /* Initial gap */
-      margin: 2rem 0;
+      gap: 2rem; 
+      margin: 2.5rem 0; /* Slightly increased margin between levels */
       flex-wrap: wrap;
     }
-     /* More specific gap for levels with more items to prevent overlap */
-    .mindmap-level:nth-of-type(2) { /* Level 1 nodes from node-main (laser, optics, etc.) */
-        gap: 4rem; /* Further increased gap for the busiest level */
+    .mindmap-level:nth-of-type(1) { /* Central Node Level */
+        margin-bottom: 3rem; /* More space after central node */
     }
-    .mindmap-level:nth-of-type(3) { /* Level 2 nodes from node-optics (lens1, filter1, etc.) */
-        gap: 3.5rem; /* Slightly increased gap */
+    .mindmap-level:nth-of-type(2) { 
+        gap: 2.5rem; /* Adjusted gap for 5 items */
     }
-    .mindmap-level:nth-of-type(4) { /* Level 2/3 nodes from node-mcu (power, display, etc.) */
-        gap: 3.5rem; /* Slightly increased gap */
+    .mindmap-level:nth-of-type(3) { 
+        gap: 2rem;   /* Adjusted gap for 4 items */
+    }
+    .mindmap-level:nth-of-type(4) { 
+        gap: 3rem;   /* Adjusted gap for 3 items */
     }
 
     .mindmap-node {
@@ -344,13 +346,13 @@
       border: 2px solid #00d4ff;
       border-radius: 15px;
       padding: 1.5rem 2rem;
-      position: relative;
+      position: relative; /* Needed for offsetLeft/offsetTop to work relative to .mindmap */
       transition: all 0.4s ease;
       cursor: pointer;
       backdrop-filter: blur(10px);
       z-index: 10;
       text-align: center;
-      min-width: 170px; /* Increased min-width for better text flow */
+      min-width: 170px; 
     }
 
     .mindmap-node:hover {
@@ -388,7 +390,6 @@
       color: #ffffff;
     }
 
-    /* SVG Connection Lines */
     .connections-svg {
       position: absolute;
       top: 0;
@@ -458,17 +459,32 @@
       transform: translateX(-50%);
       font-size: 2rem;
       color: #00d4ff;
-      animation: bounce 2s infinite;
+      animation: pulseArrow 2s infinite ease-in-out;
     }
 
     .flowchart-step:last-child::after {
       display: none;
     }
 
-    @keyframes bounce {
+    /* @keyframes bounce { 
       0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
       40% { transform: translateX(-50%) translateY(-10px); }
       60% { transform: translateX(-50%) translateY(-5px); }
+    } */
+
+    @keyframes pulseArrow {
+      0% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(0.90);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
     }
 
     /* Enhanced Popups */
@@ -1880,12 +1896,13 @@
       particle.style.height = particle.style.width;
       particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
       particle.style.animationDelay = `${Math.random() * 5}s`;
-      particleContainer.appendChild(particle);
+      if (particleContainer) particleContainer.appendChild(particle);
     }
 
     let particlesEnabled = true;
     function initParticles() {
       if (particlesEnabled && particleContainer) {
+        particleContainer.innerHTML = ''; // Clear existing before adding new ones
         for (let i = 0; i < numParticles; i++) {
           createParticle();
         }
@@ -1902,11 +1919,9 @@
             }
         }
     }
-    // --- Scroll Progress & Active Nav Item ---
-    const scrollProgressBar = document.getElementById('scrollProgress');
-    const navItems = document.querySelectorAll('.nav-item');
-    const sections = document.querySelectorAll('header, .section'); // Include header as a section
 
+    // --- Scroll Progress ---
+    const scrollProgressBar = document.getElementById('scrollProgress');
     function updateScrollProgress() {
       if (!scrollProgressBar) return;
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -1914,81 +1929,6 @@
       const progress = (scrollTop / scrollHeight) * 100;
       scrollProgressBar.style.width = `${progress}%`;
     }
-
-    function updateActiveNavItem() {
-      let currentSectionId = '';
-      const offset = window.innerHeight * 0.4; // 40% from the top
-      // console.log(`DEBUG: ScrollY: ${window.pageYOffset.toFixed(2)}, Offset Trigger Point: ${offset.toFixed(2)}, Window Height: ${window.innerHeight}`);
-
-      sections.forEach(section => {
-        const sectionTrueTop = section.offsetTop;
-        const detectionPoint = sectionTrueTop - offset; // Point at which section should become active
-        const sectionEffectiveBottom = detectionPoint + section.offsetHeight; // End of this section's "detection zone"
-
-        // console.log(`DEBUG: Section: ${section.id}, True Top: ${sectionTrueTop.toFixed(2)}, Detection Pt: ${detectionPoint.toFixed(2)}, Effective Bottom: ${sectionEffectiveBottom.toFixed(2)}`);
-        
-        if (window.pageYOffset >= detectionPoint && window.pageYOffset < sectionEffectiveBottom) {
-          currentSectionId = section.id;
-        }
-      });
-      
-      if (!currentSectionId) {
-        if (window.pageYOffset + window.innerHeight >= document.documentElement.scrollHeight - 20) {
-            if (sections.length > 0) {
-                currentSectionId = sections[sections.length - 1].id;
-                // console.log("DEBUG: Fallback to LAST section (at page bottom):", currentSectionId);
-            }
-        } 
-        else if (sections.length > 0 && window.pageYOffset < (sections[0].offsetTop - offset + (sections[0].offsetHeight / 2) ) ) { 
-            // More lenient check for the first section: if we are above the halfway point of its detection zone from top
-            currentSectionId = sections[0].id;
-            // console.log("DEBUG: Fallback to FIRST section (at page top or before first detection):", currentSectionId);
-        } else {
-            for (let i = sections.length - 1; i >= 0; i--) {
-                if (window.pageYOffset >= (sections[i].offsetTop - offset)) {
-                    currentSectionId = sections[i].id;
-                    // console.log("DEBUG: Fallback - closest section from bottom up whose detection point is passed:", currentSectionId);
-                    break;
-                }
-            }
-        }
-      }
-      if (!currentSectionId && sections.length > 0 && window.pageYOffset < offset ) {
-          currentSectionId = sections[0].id; // Default to first if all else fails and near top
-          // console.log("DEBUG: Fallback to FIRST section (very top, final check if all else failed):", currentSectionId);
-      }
-
-      // console.log('DEBUG: Final determined currentSectionId:', currentSectionId);
-
-      navItems.forEach(item => {
-        const tooltip = item.querySelector('.nav-tooltip');
-        if (tooltip) {
-            const tooltipText = tooltip.textContent;
-            let sectionIdToMatch = tooltipText.toLowerCase();
-            sectionIdToMatch = sectionIdToMatch.replace(/\s*&\s*/g, '-and-'); 
-            sectionIdToMatch = sectionIdToMatch.replace(/[\s_]+/g, '-');    
-            sectionIdToMatch = sectionIdToMatch.replace(/[^\w-]+/g, '');   
-            
-            // console.log(`DEBUG: NavItem Tooltip: "${tooltipText}", Transformed ID for matching: "${sectionIdToMatch}"`);
-            
-            let isActive = false;
-            if (currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch === 'header')) {
-                 isActive = true;
-            } else if (sectionIdToMatch === currentSectionId) {
-                 isActive = true;
-            }
-
-            if (isActive) {
-                // console.log(`DEBUG: ACTIVATING nav item for: ${sectionIdToMatch} (current page section: ${currentSectionId})`);
-                item.classList.add('active');
-            } else {
-                // console.log(`DEBUG: DEACTIVATING nav item for: ${sectionIdToMatch} (current page section: ${currentSectionId})`);
-                item.classList.remove('active');
-            }
-        }
-      });
-    }
-
 
     // --- Smooth Scrolling ---
     function scrollToSection(sectionId) {
@@ -2007,7 +1947,7 @@
 
     function showPopup(popupId) {
       if (currentPopup) {
-        closePopup(); // Close any existing popup first
+        closePopup(); 
       }
       const popup = document.getElementById(popupId);
       if (popup && overlay) {
@@ -2041,23 +1981,54 @@
 
     // --- Mindmap Connections ---
     const mindmapConnectionsSVG = document.getElementById('mindmapConnections');
+    const mindmapElement = document.querySelector('.mindmap'); // Parent for offset calculations
 
-    function getElementCenter(elementId) {
+    function getNodeConnectionPoint(elementId, edge = 'center', siblingIndex = 0, totalSiblings = 1) {
         const elem = document.getElementById(elementId);
-        if (!elem || !mindmapConnectionsSVG) return null;
+        if (!elem || !mindmapConnectionsSVG || !mindmapElement) return null;
 
-        const mindmapRect = mindmapConnectionsSVG.getBoundingClientRect();
+        const mindmapGlobalRect = mindmapElement.getBoundingClientRect(); // Get mindmap's global position
         const elemRect = elem.getBoundingClientRect();
-        
-        const x = elemRect.left + elemRect.width / 2 - mindmapRect.left;
-        const y = elemRect.top + elemRect.height / 2 - mindmapRect.top;
-        
+
+        // Calculate element's position relative to the .mindmap container
+        const elemTop = elemRect.top - mindmapGlobalRect.top;
+        const elemLeft = elemRect.left - mindmapGlobalRect.left;
+        const elemWidth = elemRect.width;
+        const elemHeight = elemRect.height;
+
+        let x, y;
+
+        switch (edge) {
+            case 'top':
+                y = elemTop;
+                x = elemLeft + (elemWidth / (totalSiblings + 1)) * (siblingIndex + 1);
+                break;
+            case 'bottom':
+                y = elemTop + elemHeight;
+                x = elemLeft + (elemWidth / (totalSiblings + 1)) * (siblingIndex + 1);
+                break;
+            case 'left':
+                x = elemLeft;
+                y = elemTop + (elemHeight / (totalSiblings + 1)) * (siblingIndex + 1);
+                break;
+            case 'right':
+                x = elemLeft + elemWidth;
+                y = elemTop + (elemHeight / (totalSiblings + 1)) * (siblingIndex + 1);
+                break;
+            case 'center':
+            default:
+                x = elemLeft + elemWidth / 2;
+                y = elemTop + elemHeight / 2;
+                break;
+        }
         return { x, y };
     }
 
-    function drawConnection(fromNodeId, toNodeId, svgContainer) {
-        const start = getElementCenter(fromNodeId);
-        const end = getElementCenter(toNodeId);
+    function drawConnection(connectionDef, svgContainer) {
+        const { from, to, fromEdge, toEdge, fromIndex = 0, fromTotal = 1, toIndex = 0, toTotal = 1 } = connectionDef;
+        
+        const start = getNodeConnectionPoint(from, fromEdge, fromIndex, fromTotal);
+        const end = getNodeConnectionPoint(to, toEdge, toIndex, toTotal);
 
         if (start && end && svgContainer) {
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -2074,54 +2045,79 @@
         if (!mindmapConnectionsSVG) return;
         mindmapConnectionsSVG.innerHTML = ''; 
 
+        // Define connections with edge types and distribution hints
         const connections = [
-            { from: 'node-main', to: 'node-laser' },
-            { from: 'node-main', to: 'node-optics' },
-            { from: 'node-main', to: 'node-flowcell' },
-            { from: 'node-main', to: 'node-detector' },
-            { from: 'node-main', to: 'node-mcu' },
-            { from: 'node-optics', to: 'node-lens1' },
-            { from: 'node-optics', to: 'node-filter1' },
-            { from: 'node-optics', to: 'node-lens2' },
-            { from: 'node-optics', to: 'node-filter2' },
-            { from: 'node-mcu', to: 'node-power' },
-            { from: 'node-mcu', to: 'node-display' },
-            { from: 'node-mcu', to: 'node-interface' }
+            // From node-main (bottom edge, distributed) to Level 1 nodes (top edge, centered)
+            { from: 'node-main', to: 'node-laser', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 5 },
+            { from: 'node-main', to: 'node-optics', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 5 },
+            { from: 'node-main', to: 'node-flowcell', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 5 },
+            { from: 'node-main', to: 'node-detector', fromEdge: 'bottom', toEdge: 'top', fromIndex: 3, fromTotal: 5 },
+            { from: 'node-main', to: 'node-mcu', fromEdge: 'bottom', toEdge: 'top', fromIndex: 4, fromTotal: 5 },
+            
+            // From node-optics (bottom edge, distributed) to its children (top edge, centered)
+            { from: 'node-optics', to: 'node-lens1', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 4 },
+            { from: 'node-optics', to: 'node-filter1', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 4 },
+            { from: 'node-optics', to: 'node-lens2', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 4 },
+            { from: 'node-optics', to: 'node-filter2', fromEdge: 'bottom', toEdge: 'top', fromIndex: 3, fromTotal: 4 },
+            
+            // From node-mcu (bottom edge, distributed) to its children (top edge, centered)
+            { from: 'node-mcu', to: 'node-power', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 3 },
+            { from: 'node-mcu', to: 'node-display', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 3 },
+            { from: 'node-mcu', to: 'node-interface', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 3 }
         ];
 
-        connections.forEach(conn => {
-            drawConnection(conn.from, conn.to, mindmapConnectionsSVG);
-        });
+        connections.forEach(connDef => drawConnection(connDef, mindmapConnectionsSVG));
     }
     
     // --- Control Panel Functions ---
     function resetView() {
         scrollToSection('header');
-        if (currentPopup) {
-            closePopup();
-        }
+        if (currentPopup) closePopup();
     }
 
-    // --- Event Listeners ---
-    window.addEventListener('scroll', () => {
-      updateScrollProgress();
-      updateActiveNavItem();
-    });
-    
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            drawAllMindmapConnections();
-            updateActiveNavItem(); 
-        }, 250); 
-    });
-
+    // --- DOMContentLoaded Initial Setup ---
     document.addEventListener('DOMContentLoaded', () => {
+      const navItems = document.querySelectorAll('.nav-item'); 
+      const sections = document.querySelectorAll('header, .section');
+
       initParticles();
-      updateScrollProgress();
-      updateActiveNavItem();
+      updateScrollProgress(); 
       drawAllMindmapConnections();
+
+      if ('IntersectionObserver' in window) {
+        const observerOptions = {
+          root: null, 
+          rootMargin: '-40% 0px -59% 0px', 
+          threshold: 0 
+        };
+
+        const navObserverCallback = (entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const currentSectionId = entry.target.id;
+              navItems.forEach(item => {
+                const tooltip = item.querySelector('.nav-tooltip');
+                if (tooltip) {
+                  let sectionIdToMatch = tooltip.textContent.toLowerCase();
+                  sectionIdToMatch = sectionIdToMatch.replace(/\s*&\s*/g, '-and-');
+                  sectionIdToMatch = sectionIdToMatch.replace(/[\s_]+/g, '-');
+                  sectionIdToMatch = sectionIdToMatch.replace(/[^\w-]+/g, '');
+
+                  if ((currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch === 'header')) || sectionIdToMatch === currentSectionId) {
+                    item.classList.add('active');
+                  } else {
+                    item.classList.remove('active');
+                  }
+                }
+              });
+            }
+          });
+        };
+        const navObserver = new IntersectionObserver(navObserverCallback, observerOptions);
+        sections.forEach(section => navObserver.observe(section));
+      } else {
+        console.warn("IntersectionObserver not supported. Active navigation highlighting might not work optimally.");
+      }
 
       navItems.forEach(item => {
           const tooltip = item.querySelector('.nav-tooltip');
@@ -2138,12 +2134,24 @@
           if (popupIdMatch && popupIdMatch[1]) {
               const popupId = popupIdMatch[1];
               trigger.removeAttribute('onclick'); 
-              trigger.addEventListener('click', () => showPopup(popupId));
+              trigger.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                showPopup(popupId);
+              });
               trigger.style.cursor = 'pointer'; 
           }
       });
-    });
 
+      window.addEventListener('scroll', updateScrollProgress);
+      
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+              drawAllMindmapConnections();
+          }, 250); 
+      });
+    });
   </script>
 </body>
 </html>
