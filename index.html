@@ -324,9 +324,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 2rem;
+      gap: 2rem; /* Initial gap */
       margin: 2rem 0;
       flex-wrap: wrap;
+    }
+     /* More specific gap for levels with more items to prevent overlap */
+    .mindmap-level:nth-of-type(2) { /* Level 1 nodes from node-main (laser, optics, etc.) */
+        gap: 4rem; /* Further increased gap for the busiest level */
+    }
+    .mindmap-level:nth-of-type(3) { /* Level 2 nodes from node-optics (lens1, filter1, etc.) */
+        gap: 3.5rem; /* Slightly increased gap */
+    }
+    .mindmap-level:nth-of-type(4) { /* Level 2/3 nodes from node-mcu (power, display, etc.) */
+        gap: 3.5rem; /* Slightly increased gap */
     }
 
     .mindmap-node {
@@ -340,7 +350,7 @@
       backdrop-filter: blur(10px);
       z-index: 10;
       text-align: center;
-      min-width: 150px;
+      min-width: 170px; /* Increased min-width for better text flow */
     }
 
     .mindmap-node:hover {
@@ -859,4 +869,1281 @@
     <div class="mindmap-container" id="device-components">
       <h2 class="mindmap-title"><span class="animated-icon">🔧</span> Device Components Overview</h2>
       <div class="mindmap">
-        <svg class="connections-svg"
+        <svg class="connections-svg" id="mindmapConnections"></svg>
+        <div class="mindmap-level">
+          <div class="mindmap-node central-node" id="node-main" onclick="showPopup('popup-main-device')">Main Device: Microplastic Detector</div>
+        </div>
+        <div class="mindmap-level">
+          <div class="mindmap-node level-1-node" id="node-laser" onclick="showPopup('popup-laser-module')">Laser Module (405nm)</div>
+          <div class="mindmap-node level-1-node" id="node-optics" onclick="showPopup('popup-optical-components')">Optical Components</div>
+          <div class="mindmap-node level-1-node" id="node-flowcell" onclick="showPopup('popup-flow-cell')">Flow Cell</div>
+          <div class="mindmap-node level-1-node" id="node-detector" onclick="showPopup('popup-detector-photodiode')">Detector (Photodiode)</div>
+          <div class="mindmap-node level-1-node" id="node-mcu" onclick="showPopup('popup-mcu-arduino')">MCU (Arduino Nano)</div>
+        </div>
+        <div class="mindmap-level">
+          <div class="mindmap-node level-2-node" id="node-lens1" onclick="showPopup('popup-collimating-lens')">Collimating Lens</div>
+          <div class="mindmap-node level-2-node" id="node-filter1" onclick="showPopup('popup-excitation-filter')">Excitation Filter</div>
+          <div class="mindmap-node level-2-node" id="node-lens2" onclick="showPopup('popup-focusing-lens')">Focusing Lens</div>
+          <div class="mindmap-node level-2-node" id="node-filter2" onclick="showPopup('popup-emission-filter')">Emission Filter</div>
+        </div>
+         <div class="mindmap-level">
+          <div class="mindmap-node level-3-node" id="node-power" onclick="showPopup('popup-power-supply')">Power Supply</div>
+          <div class="mindmap-node level-3-node" id="node-display" onclick="showPopup('popup-display-oled')">Display (OLED)</div>
+          <div class="mindmap-node level-3-node" id="node-interface" onclick="showPopup('popup-user-interface')">User Interface</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optical System Details -->
+    <div class="section" id="optical-system">
+      <h2 class="section-title"><span class="animated-icon">💡</span> Optical System & Signal Processing</h2>
+       <div class="cards-grid">
+        <div class="card hover-effect" onclick="showPopup('popup-optical-path')">
+          <div class="card-title">🔎 Optical Path Design</div>
+          <div class="card-description">Detailed look at the arrangement of lenses, filters, and the flow cell to maximize signal detection and minimize noise.</div>
+        </div>
+        <div class="card hover-effect" onclick="showPopup('popup-signal-processing')">
+          <div class="card-title">📈 Signal Processing</div>
+          <div class="card-description">How raw data from the photodiode is amplified, filtered, and converted into meaningful microplastic counts and size estimates.</div>
+        </div>
+         <div class="card hover-effect" onclick="showPopup('popup-calibration')">
+          <div class="card-title">🛠️ Calibration & Accuracy</div>
+          <div class="card-description">Methods for calibrating the device using standardized microplastic beads to ensure measurement accuracy and reliability.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation Details Section -->
+    <div class="section" id="implementation">
+        <h2 class="section-title"><span class="animated-icon">💻</span> Implementation: Hardware & Software</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="showPopup('popup-hardware')">
+                <div class="card-title">🔩 Hardware Assembly</div>
+                <div class="card-description">Step-by-step guide to assembling the physical components of the detector, including 3D printed parts and off-the-shelf electronics.</div>
+            </div>
+            <div class="card" onclick="showPopup('popup-software')">
+                <div class="card-title">👨‍💻 Software & Algorithms</div>
+                <div class="card-description">Overview of the Arduino code for device control and data acquisition, and Python scripts for advanced analysis and visualization.</div>
+            </div>
+            <div class="card" onclick="showPopup('popup-data-analysis')">
+                <div class="card-title">📊 Data Analysis Workflow</div>
+                <div class="card-description">From raw sensor readings to final microplastic concentration maps: a look at the data processing pipeline.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results & Future Work Section -->
+    <div class="section" id="results">
+        <h2 class="section-title"><span class="animated-icon">🏆</span> Results & Future Enhancements</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="showPopup('popup-experimental-results')">
+                <div class="card-title">📈 Experimental Results</div>
+                <div class="card-description">Presentation of detection accuracy, sensitivity limits, and comparison with existing methods based on laboratory tests.</div>
+            </div>
+            <div class="card" onclick="showPopup('popup-future-work')">
+                <div class="card-title">🚀 Future Work</div>
+                <div class="card-description">Potential improvements, including machine learning for particle classification, IoT integration, and enhanced user interface.</div>
+            </div>
+            <div class="card" onclick="showPopup('popup-community')">
+                <div class="card-title">🌍 Community & Open Source</div>
+                <div class="card-description">Join the community, contribute to the open-source project, and help us improve accessible microplastic detection technology.</div>
+            </div>
+        </div>
+    </div>
+  </main>
+
+  <!-- Popups -->
+  <div class="overlay" id="overlay" onclick="closePopup()"></div>
+
+  <div class="popup" id="popup1">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🎯 Project Overview</h3>
+    <p>This project introduces an enhanced, interactive, and educational approach to a home-compatible microplastic detection device. The primary goal is to make environmental science more accessible by providing a hands-on tool for identifying microplastic particles in household water sources.</p>
+    <h4>Key Objectives:</h4>
+    <ul>
+      <li>Develop a low-cost, easy-to-assemble microplastic detector using readily available components.</li>
+      <li>Employ laser scattering and fluorescence detection principles for identifying plastic particles.</li>
+      <li>Integrate an Arduino microcontroller for data acquisition and basic processing.</li>
+      <li>Provide an interactive web interface (this page!) for educational purposes, explaining the science, components, and process.</li>
+      <li>Achieve a detection limit suitable for identifying common microplastics (e.g., >5μm).</li>
+    </ul>
+    <h4>Methodology Highlights:</h4>
+    <ul>
+      <li><strong>Optical System:</strong> A 405nm laser diode, focusing lenses, and a photodiode detector.</li>
+      <li><strong>Sample Handling:</strong> A custom-designed flow cell (potentially 3D printed).</li>
+      <li><strong>Staining (Optional but Recommended):</strong> Use of Nile Red dye to enhance fluorescence of plastic particles.</li>
+      <li><strong>Data Output:</strong> Particle count and estimated size range.</li>
+    </ul>
+    <h4>Educational Value:</h4>
+    <p>This project aims to educate users about:
+      The pervasive issue of microplastic pollution.
+      The scientific principles behind particle detection.
+      Basic electronics, optics, and programming (Arduino).
+      The importance of citizen science in environmental monitoring.
+    </p>
+  </div>
+
+  <div class="popup" id="popup-microplastics">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🌊 The Microplastic Challenge</h3>
+    <p>Microplastics are tiny plastic particles less than 5 millimeters (0.2 inches) in diameter. They originate from various sources, including the breakdown of larger plastic debris, synthetic fibers from clothing, microbeads in cosmetics, and industrial processes.</p>
+    <h4>Environmental Impact:</h4>
+    <ul>
+      <li><strong>Ubiquitous Contamination:</strong> Found in oceans, freshwater systems, soil, air, and even remote polar regions.</li>
+      <li><strong>Wildlife Harm:</strong> Ingested by marine life, birds, and other animals, leading to physical harm, toxic exposure, and disruption of food chains.</li>
+      <li><strong>Ecosystem Disruption:</strong> Can alter soil properties, affect plant growth, and serve as vectors for other pollutants.</li>
+    </ul>
+    <h4>Why Accessible Detection is Crucial:</h4>
+    <ul>
+      <li><strong>Public Awareness:</strong> Empowers individuals to understand their local environment and potential exposure.</li>
+      <li><strong>Data Collection:</strong> Citizen science initiatives can contribute valuable data to larger environmental studies.</li>
+      <li><strong>Policy & Action:</strong> Increased awareness and data can drive demand for better regulations and solutions to plastic pollution.</li>
+      <li><strong>Early Warning:</strong> Helps identify contamination hotspots and potential health risks sooner.</li>
+    </ul>
+  </div>
+
+   <div class="popup" id="popup-health-impacts">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>⚕️ Health Impacts of Microplastics</h3>
+    <p>The potential health effects of microplastics on humans are an active area of research. Exposure can occur through ingestion (contaminated food and water), inhalation, and dermal contact.</p>
+    <h4>Potential Concerns:</h4>
+    <ul>
+      <li><strong>Physical Damage:</strong> Ingested particles could cause inflammation or damage to the digestive tract.</li>
+      <li><strong>Chemical Leaching:</strong> Plastics often contain additives (e.g., phthalates, bisphenol A) that can leach out and act as endocrine disruptors or carcinogens.</li>
+      <li><strong>Vector for Pathogens & Toxins:</strong> Microplastics can adsorb persistent organic pollutants (POPs) and heavy metals from the environment, concentrating them and potentially transferring them to organisms upon ingestion. They can also harbor microbial biofilms.</li>
+      <li><strong>Immune Response:</strong> The presence of foreign particles could trigger immune responses or oxidative stress.</li>
+      <li><strong>Translocation:</strong> Studies suggest the smallest microplastics (nanoplastics) may be ableto translocate from the gut to other organs.</li>
+    </ul>
+    <h4>Monitoring Drinking Water:</h4>
+    <p>Given that drinking water is a direct route of exposure, monitoring its microplastic content is vital. Home-compatible devices can play a role in:
+      Increasing awareness of personal exposure levels.
+      Validating the effectiveness of home water filtration systems.
+      Contributing to a broader understanding of microplastic prevalence in tap water.
+    </p>
+    <p><em>Further research is ongoing to fully understand the long-term health implications of microplastic exposure.</em></p>
+  </div>
+
+  <div class="popup" id="popup2">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🔬 Detection Principles</h3>
+    <p>This device primarily utilizes two optical phenomena for detecting microplastics: laser scattering and laser-induced fluorescence (especially when particles are stained with a dye like Nile Red).</p>
+    <h4>1. Laser Scattering (Mie Scattering / Tyndall Effect):</h4>
+    <ul>
+      <li>When a laser beam encounters a particle in the water sample, the light is scattered in various directions.</li>
+      <li>The intensity and pattern of scattered light depend on the particle's size, shape, refractive index, and the wavelength of the laser light.</li>
+      <li>A photodiode or similar light sensor is positioned to detect this scattered light. An increase in scattered light indicates the presence of a particle.</li>
+      <li>For particles larger than the wavelength of light (which is common for microplastics and our 405nm laser), Mie scattering theory is more applicable. Simpler Rayleigh scattering applies to much smaller particles.</li>
+    </ul>
+    <h4>2. Laser-Induced Fluorescence (LIF):</h4>
+    <ul>
+      <li>Certain materials, including many plastics (especially when treated with fluorescent dyes like Nile Red), absorb light at one wavelength (excitation) and then re-emit light at a longer wavelength (emission).</li>
+      <li>The 405nm laser excites the dye (or intrinsic fluorescence of some plastics).</li>
+      <li>The emitted fluorescent light, typically at a longer wavelength (e.g., yellow/orange for Nile Red stained plastics), is then detected by the photodiode.</li>
+      <li>Optical filters are crucial here:
+        <ul>
+          <li>An <strong>excitation filter</strong> might be used to clean up the laser output.</li>
+          <li>An <strong>emission filter</strong> is placed before the detector to block the scattered laser light and allow only the fluorescent light to pass. This significantly improves the signal-to-noise ratio for detecting plastics.</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>Combined Approach:</h4>
+    <p>By analyzing both the scattered light and the fluorescent signal, the system can:
+      Detect the presence of particles.
+      Differentiate between plastic (fluorescent) and non-plastic (non-fluorescent or less fluorescent) particles.
+      Potentially estimate particle size based on signal intensity and duration as it passes through the laser beam.
+    </p>
+  </div>
+
+  <div class="popup" id="popup-conventional">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>📊 Conventional Microplastic Detection Methods</h3>
+    <p>Several established laboratory techniques are used for microplastic analysis, each with its strengths and weaknesses, particularly concerning accessibility and cost.</p>
+    <h4>1. Visual Microscopy:</h4>
+    <ul>
+      <li><strong>Principle:</strong> Particles are isolated (e.g., by filtration) and then visually identified and counted under a microscope. Hot needle test or staining can aid identification.</li>
+      <li><strong>Pros:</strong> Relatively inexpensive equipment, can identify larger microplastics.</li>
+      <li><strong>Cons:</strong> Labor-intensive, subjective, prone to human error, difficult for very small particles (<100μm), doesn't easily identify polymer type.</li>
+    </ul>
+    <h4>2. Fourier Transform Infrared (FTIR) Spectroscopy:</h4>
+    <ul>
+      <li><strong>Principle:</strong> Identifies polymer types based on their unique infrared absorption spectra. Can be coupled with microscopy (μ-FTIR).</li>
+      <li><strong>Pros:</strong> Accurate polymer identification, can detect small particles.</li>
+      <li><strong>Cons:</strong> Expensive equipment, requires skilled operators, time-consuming sample preparation and analysis.</li>
+    </ul>
+    <h4>3. Raman Spectroscopy:</h4>
+    <ul>
+      <li><strong>Principle:</strong> Similar to FTIR, identifies polymers by their characteristic Raman scattering spectra when illuminated by a laser. Can be coupled with microscopy (μ-Raman).</li>
+      <li><strong>Pros:</strong> Excellent for small particles (down to 1μm), can analyze particles in water.</li>
+      <li><strong>Cons:</strong> Very expensive equipment, can be slow, fluorescence interference can be an issue for some samples.</li>
+    </ul>
+    <h4>4. Pyrolysis-Gas Chromatography-Mass Spectrometry (Py-GC-MS):</h4>
+    <ul>
+      <li><strong>Principle:</strong> Sample is heated to break down polymers into smaller molecules, which are then separated by GC and identified by MS.</li>
+      <li><strong>Pros:</strong> Can identify and quantify polymer mass, good for complex mixtures.</li>
+      <li><strong>Cons:</strong> Destructive method, expensive, complex data analysis.</li>
+    </ul>
+    <h4>Limitations for Home Use:</h4>
+    <p>These conventional methods are generally not suitable for home or citizen science applications due to:
+      High cost of equipment.
+      Need for specialized laboratory environments.
+      Complex operational procedures and data interpretation.
+      Time-consuming nature of the analyses.
+    </p>
+    <p>This is why projects like ours aim to develop simpler, more affordable alternatives, even if they offer less detailed information than these advanced techniques.</p>
+  </div>
+
+  <div class="popup" id="popup-laser">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>⚡ Emerging Laser-Based Techniques</h3>
+    <p>Laser-based methods are gaining traction for microplastic detection due to their potential for speed, sensitivity, and automation. Our project draws inspiration from these approaches.</p>
+    <h4>1. Laser Diffraction / Scattering:</h4>
+    <ul>
+      <li><strong>Principle:</strong> Measures the angular distribution of scattered light when a laser beam passes through a sample containing particles. Particle size distribution can be inferred from the diffraction pattern.</li>
+      <li><strong>Pros:</strong> Rapid analysis, can determine size distributions.</li>
+      <li><strong>Cons:</strong> May not easily distinguish plastic from other particulates without additional methods.</li>
+    </ul>
+    <h4>2. Flow Cytometry with Fluorescence Detection:</h4>
+    <ul>
+      <li><strong>Principle:</strong> Particles in a fluid stream pass one-by-one through a laser beam. Scattered light and fluorescence signals are measured for each particle. Often uses fluorescent dyes like Nile Red to selectively stain plastics.</li>
+      <li><strong>Pros:</strong> High throughput, can count and characterize individual particles, potential for automation.</li>
+      <li><strong>Cons:</strong> Sophisticated instruments can be expensive, requires careful calibration. Our project is a simplified version of this concept.</li>
+    </ul>
+    <h4>3. Laser-Induced Breakdown Spectroscopy (LIBS):</h4>
+    <ul>
+      <li><strong>Principle:</strong> A high-power laser pulse ablates a small amount of material from the particle, creating a plasma. The light emitted from the plasma is analyzed to determine elemental composition, which can help identify plastics.</li>
+      <li><strong>Pros:</strong> Can identify polymer types, minimal sample preparation.</li>
+      <li><strong>Cons:</strong> Complex and expensive equipment, data analysis can be challenging.</li>
+    </ul>
+    <h4>4. Staining and Fluorescence Microscopy:</h4>
+    <ul>
+      <li><strong>Principle:</strong> Samples are stained with dyes like Nile Red that preferentially bind to plastics and make them fluoresce under specific wavelengths of light (e.g., blue or UV laser). Then observed under a fluorescence microscope.</li>
+      <li><strong>Pros:</strong> Enhances visibility of plastics, can be relatively low-cost compared to spectroscopy.</li>
+      <li><strong>Cons:</strong> Manual counting can be time-consuming, dye effectiveness can vary.</li>
+    </ul>
+    <h4>Adaptation for Home-Compatible Applications:</h4>
+    <p>Our project simplifies these advanced techniques by:
+      Using a low-cost laser diode (405nm).
+      Employing a simple photodiode for detecting overall changes in scattered light and fluorescence.
+      Relying on Nile Red staining to enhance plastic-specific signals.
+      Using an Arduino for basic signal processing and counting.
+    </p>
+    <p>The goal is not to replicate the precision of lab instruments but to provide an accessible tool for indicative measurements and education.</p>
+  </div>
+
+  <!-- Flowchart Popups -->
+  <div class="popup" id="popup-step1">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Step 1: Sample Collection</h3>
+    <p>Proper sample collection is crucial for accurate microplastic analysis.</p>
+    <h4>Key Considerations:</h4>
+    <ul>
+      <li><strong>Container Choice:</strong> Use clean glass or stainless steel containers. Avoid plastic containers to prevent sample contamination. If plastic must be used, rinse it thoroughly with filtered water multiple times.</li>
+      <li><strong>Volume:</strong> Collect a representative volume (e.g., 1-4 liters for drinking water).</li>
+      <li><strong>Technique:</strong>
+        For tap water, let the water run for a short period to flush pipes before collecting.
+        For surface water, collect from below the surface film if possible.
+      </li>
+      <li><strong>Contamination Prevention:</strong> Wear nitrile gloves. Avoid clothing that sheds synthetic fibers (like fleece) during collection. Keep samples covered.</li>
+      <li><strong>Blanks:</strong> It's good practice (especially in formal studies) to prepare "field blanks" – containers filled with known microplastic-free water taken through the same collection and processing steps to check for contamination.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-step2">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Step 2: Pre-filtering (Optional but Recommended)</h3>
+    <p>Pre-filtering can remove larger debris (hair, sand, organic matter) that might interfere with the detection of smaller microplastics or clog the device.</p>
+    <h4>Method:</h4>
+    <ul>
+      <li>Use a series of stainless steel sieves or filters with decreasing mesh sizes (e.g., 5mm, 1mm, 300μm). The final mesh size should be larger than the target microplastics.</li>
+      <li>Gently pass the water sample through the sieves. Rinse the sieves with a small amount of filtered water to ensure all microplastics pass through to the next stage.</li>
+      <li>This step is particularly important for environmental samples (rivers, lakes) which may contain significant natural debris. For tap water, it might be less critical but still good practice.</li>
+    </ul>
+    <p><strong>Note:</strong> The goal is to remove interfering particles, not the microplastics themselves. The filtrate (water that passes through) is what you'll analyze.</p>
+  </div>
+
+  <div class="popup" id="popup-step3">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Step 3: Nile Red Staining</h3>
+    <p>Nile Red is a fluorescent dye that selectively stains hydrophobic materials, including many types of plastics, making them easier to detect via fluorescence.</p>
+    <h4>Procedure:</h4>
+    <ul>
+      <li><strong>Stock Solution:</strong> Prepare a stock solution of Nile Red dye (e.g., in acetone or dichloromethane – handle with care in a well-ventilated area). A typical concentration might be 1 mg/mL.</li>
+      <li><strong>Working Solution:</strong> Dilute the stock solution further (e.g., in an appropriate solvent like isopropanol or directly in the water sample if using a method that supports it, though direct addition to large water volumes is less common than staining filtered material).</li>
+      <li><strong>Application:</strong>
+        If microplastics have been concentrated on a filter, the dye solution can be applied to the filter.
+        Alternatively, the dye can be added to the water sample, mixed, and incubated for a period (e.g., 30-60 minutes in the dark).
+      </li>
+      <li><strong>Concentration:</strong> The final concentration of Nile Red in the sample needs to be optimized. Too little won't provide enough fluorescence; too much can lead to high background fluorescence. Typical concentrations in the sample might range from 0.1 to 10 µg/mL.</li>
+      <li><strong>Incubation:</strong> Allow time for the dye to adsorb onto the plastics. This is often done in the dark to prevent photobleaching of the dye.</li>
+    </ul>
+    <p><strong>Safety:</strong> Nile Red and its solvents require careful handling. Wear gloves, eye protection, and work in a well-ventilated area or fume hood. Consult Safety Data Sheets (SDS).</p>
+    <p>When stained, plastics will typically fluoresce in the yellow-orange-red spectrum when excited with blue or UV/violet light (like our 405nm laser).</p>
+  </div>
+
+  <div class="popup" id="popup-step4">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Step 4: Laser Analysis</h3>
+    <p>The prepared water sample (now potentially containing stained microplastics) is passed through the core of the detection device.</p>
+    <h4>Process within the Device:</h4>
+    <ul>
+      <li><strong>Flow Cell:</strong> The water sample flows through a narrow channel (the flow cell). This ensures that particles pass through the laser beam in a controlled manner.</li>
+      <li><strong>Laser Illumination:</strong> A focused 405nm laser beam intersects the flow cell. As particles pass through this beam:
+        <ul>
+          <li>They scatter the laser light.</li>
+          <li>If they are plastic and stained with Nile Red (or intrinsically fluorescent), they will also emit fluorescence at a longer wavelength.</li>
+        </ul>
+      </li>
+      <li><strong>Signal Detection:</strong>
+        A photodiode (or other light sensor) is positioned to detect the scattered light and/or the emitted fluorescent light.
+        An optical filter is placed in front of the detector if measuring fluorescence. This filter blocks the 405nm laser light but allows the longer wavelength fluorescent light to pass, significantly improving the detection of plastics.
+      </li>
+      <li><strong>Signal Generation:</strong> Each particle passing through the laser generates a pulse of light (scattered and/or fluorescent) that is converted into an electrical signal by the photodiode.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-step5">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Step 5: Data Processing</h3>
+    <p>The electrical signals from the photodiode are processed to count particles and potentially estimate their size.</p>
+    <h4>Arduino (Microcontroller Unit - MCU):</h4>
+    <ul>
+      <li><strong>Amplification & Conditioning:</strong> The raw signal from the photodiode is often weak and needs to be amplified and filtered (e.g., using an operational amplifier circuit) to remove noise.</li>
+      <li><strong>Analog-to-Digital Conversion (ADC):</strong> The Arduino's ADC converts the analog electrical signal (voltage) into a digital value.</li>
+      <li><strong>Thresholding:</strong> A threshold value is set in the software. If the signal strength exceeds this threshold, it's considered a particle detection event.</li>
+      <li><strong>Peak Detection/Pulse Counting:</strong> The Arduino code identifies individual pulses (peaks) in the signal, with each pulse corresponding to a particle passing through the laser.</li>
+      <li><strong>Data Logging (Basic):</strong> The Arduino can count these events and may also measure pulse characteristics (e.g., height or duration of the pulse), which can be roughly correlated to particle size. This data can be displayed on a simple LCD/OLED or sent to a computer via serial communication.</li>
+    </ul>
+    <h4>Python (Computer-Based Analysis - Optional Enhancement):</h4>
+    <ul>
+      <li><strong>Advanced Signal Processing:</strong> If raw signal data is streamed to a computer, Python scripts can perform more sophisticated analysis, such as noise reduction, baseline correction, and more accurate peak detection algorithms.</li>
+      <li><strong>Size Estimation:</strong> By analyzing pulse height, area, or duration, more refined particle size estimations can be attempted (requires calibration).</li>
+      <li><strong>Data Visualization:</strong> Python libraries like Matplotlib or Seaborn can be used to create charts and graphs of particle counts, size distributions, etc.</li>
+      <li><strong>Data Storage:</strong> Results can be saved to files (CSV, Excel) for record-keeping and further analysis.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-step6">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Step 6: Results Interpretation</h3>
+    <p>The final step is to make sense of the data generated by the device.</p>
+    <h4>Key Outputs:</h4>
+    <ul>
+      <li><strong>Particle Count:</strong> The primary output is the number of particles detected in the analyzed volume of water. This can be expressed as particles per milliliter (particles/mL) or particles per liter (particles/L).</li>
+      <li><strong>Size Distribution (Estimated):</strong> If the device and software support it, an estimated distribution of particle sizes might be provided (e.g., number of particles in the 5-20µm range, 20-50µm range, etc.). This is more qualitative with simpler systems.</li>
+    </ul>
+    <h4>Interpreting the Results:</h4>
+    <ul>
+      <li><strong>Baseline:</strong> Compare results to a baseline if available (e.g., filtered water, previous tests).</li>
+      <li><strong>Context is Key:</strong> A high particle count in untreated river water might be expected, while a similar count in bottled drinking water would be a concern.</li>
+      <li><strong>Limitations:</strong> Understand the device's limitations:
+        <ul>
+          <li><strong>Detection Limit:</strong> What is the smallest particle size it can reliably detect?</li>
+          <li><strong>Material Specificity:</strong> If using Nile Red, it's good for many common plastics, but not all. Some natural organic matter might also show some fluorescence. Without advanced spectroscopy, precise polymer identification isn't possible.</li>
+          <li><strong>Quantification Accuracy:</strong> Home-built devices provide indicative measurements. For precise quantification, lab methods are needed.</li>
+        </ul>
+      </li>
+      <li><strong>Trends:</strong> If monitoring over time, look for trends (e.g., does microplastic count increase after heavy rain? Does a new water filter reduce the count?).</li>
+      <li><strong>Educational Value:</strong> Even if not perfectly quantitative, the results are valuable for raising awareness and understanding the presence of particulates in water.</li>
+    </ul>
+    <h4>Reporting:</h4>
+    <p>If sharing results, clearly state:
+      The type of water sampled.
+      Sample volume.
+      Any pre-treatment steps (filtration, staining).
+      The detection method used (e.g., "custom-built laser scattering/fluorescence detector").
+      The units of measurement.
+    </p>
+  </div>
+
+  <!-- Mindmap Popups -->
+  <div class="popup" id="popup-main-device">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Main Device: Microplastic Detector</h3>
+    <p>The central unit integrating all components to perform microplastic detection in water samples. It's designed to be relatively low-cost and assembled from accessible parts.</p>
+    <h4>Core Functionality:</h4>
+    <ul>
+      <li>Guides a water sample through an interrogation zone.</li>
+      <li>Illuminates particles within the sample using a laser.</li>
+      <li>Detects light scattered or fluoresced by these particles.</li>
+      <li>Processes the signals to count and potentially characterize particles.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-laser-module">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Laser Module (405nm)</h3>
+    <p>The light source for the detector. A 405nm (violet/blue) laser is commonly chosen for such projects.</p>
+    <h4>Characteristics:</h4>
+    <ul>
+      <li><strong>Wavelength (405nm):</strong> Effective for exciting Nile Red dye (which then fluoresces at longer wavelengths) and for light scattering from small particles.</li>
+      <li><strong>Power:</strong> Typically low power (e.g., 5mW - 20mW) for safety and component longevity. Must be handled with care; never look directly into the beam.</li>
+      <li><strong>Modulation (Optional):</strong> Some designs might modulate (pulse) the laser to help with lock-in amplification techniques for better signal-to-noise, but this adds complexity. For a basic setup, a continuous wave (CW) laser is used.</li>
+      <li><strong>Form Factor:</strong> Often available as small, pre-packaged modules with integrated driver circuits.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-optical-components">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Optical Components</h3>
+    <p>Various lenses and filters used to shape the laser beam, direct it through the sample, and selectively collect the desired light signals.</p>
+    <h4>Key Components (examples):</h4>
+    <ul>
+      <li><strong>Collimating Lens:</strong> Makes the laser beam parallel if it's divergent.</li>
+      <li><strong>Focusing Lens:</strong> Focuses the laser beam to a small spot within the flow cell, increasing light intensity at the interrogation point.</li>
+      <li><strong>Collection Lens:</strong> Gathers scattered or fluorescent light from the particles and directs it towards the detector.</li>
+      <li><strong>Optical Filters:</strong>
+        <ul>
+          <li><strong>Excitation Filter (Bandpass):</strong> Placed after the laser to ensure only the desired laser wavelength passes, removing other spectral noise from the laser itself.</li>
+          <li><strong>Emission Filter (Longpass or Bandpass):</strong> Placed before the detector to block the scattered laser light (405nm) and allow only the longer-wavelength fluorescent light (e.g., >500nm for Nile Red) to reach the detector. This is CRUCIAL for fluorescence detection.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-flow-cell">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Flow Cell / Cuvette</h3>
+    <p>A transparent chamber or channel through which the water sample flows and intersects with the laser beam.</p>
+    <h4>Requirements:</h4>
+    <ul>
+      <li><strong>Transparency:</strong> Must be transparent at the laser wavelength (405nm) and the fluorescence emission wavelengths. Quartz or specific types of glass/plastic are often used.</li>
+      <li><strong>Geometry:</strong> Designed to create a defined interrogation volume where particles interact with the laser. Often a square or rectangular channel.</li>
+      <li><strong>Flow Control:</strong> Allows a steady, controlled flow of the sample. This can be achieved by gravity feed, a syringe pump, or a peristaltic pump.</li>
+      <li><strong>Material:</strong> Should not itself fluoresce or leach chemicals that interfere with detection.</li>
+      <li><strong>DIY Options:</strong> Can be custom-made (e.g., from microscope slides, 3D printed with transparent resin) or a commercially available cuvette can be adapted.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-detector-photodiode">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Detector (Photodiode)</h3>
+    <p>The sensor that converts the detected light (scattered or fluorescent) into an electrical signal.</p>
+    <h4>Common Choices:</h4>
+    <ul>
+      <li><strong>Photodiode:</strong> A semiconductor device that generates a current or voltage when exposed to light.
+        <ul>
+          <li><strong>PIN Photodiodes:</strong> Good sensitivity and response speed.</li>
+          <li><strong>Avalanche Photodiodes (APDs):</strong> Higher sensitivity due to internal gain, but more complex to use and more expensive.</li>
+        </ul>
+      </li>
+      <li><strong>Photomultiplier Tube (PMT):</strong> Very high sensitivity, excellent for low light levels, but bulky, requires high voltage, and expensive. Not typical for low-cost DIY projects.</li>
+      <li><strong>Light Dependent Resistor (LDR):</strong> Simple and cheap, but generally too slow and not sensitive enough for detecting fast particle events.</li>
+    </ul>
+    <h4>Considerations for this project:</h4>
+    A standard silicon photodiode is a good balance of sensitivity, cost, and ease of use. It will require an amplifier circuit (e.g., transimpedance amplifier) to convert its small current output into a usable voltage for the MCU.
+  </div>
+
+  <div class="popup" id="popup-mcu-arduino">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>MCU (Arduino Nano/Uno)</h3>
+    <p>The Microcontroller Unit is the "brain" of the device, responsible for processing signals from the detector and controlling operations.</p>
+    <h4>Role:</h4>
+    <ul>
+      <li><strong>Signal Acquisition:</strong> Reads the analog voltage from the photodiode amplifier circuit using its Analog-to-Digital Converter (ADC).</li>
+      <li><strong>Signal Processing (Basic):</strong> Implements algorithms to detect peaks/pulses in the signal that correspond to particles. This involves setting a threshold and counting events above it.</li>
+      <li><strong>Data Logging/Display:</strong> Can store particle counts, send data to a computer via serial port, or display results on a small LCD or OLED screen.</li>
+      <li><strong>Control (Optional):</strong> Could potentially control other components like pumps or valves in more advanced designs.</li>
+    </ul>
+    <h4>Why Arduino (Nano/Uno)?</h4>
+    <ul>
+      <li><strong>Accessibility:</strong> Widely available, low-cost, and well-documented.</li>
+      <li><strong>Ease of Use:</strong> Simple programming environment (Arduino IDE based on C/C++).</li>
+      <li><strong>Large Community:</strong> Plenty of tutorials and libraries available.</li>
+      <li><strong>Sufficient for Task:</strong> Has ADC capabilities and enough processing power for basic particle detection logic.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-collimating-lens">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Collimating Lens</h3>
+    <p>A lens used to make diverging rays of light parallel. In the context of a laser module, if the raw output beam spreads out, a collimating lens is used to create a more focused, straight beam.</p>
+    <h4>Function:</h4>
+    <ul>
+      <li>Takes the diverging light from the laser diode chip.</li>
+      <li>Refracts the light rays so they travel parallel to each other.</li>
+      <li>This results in a beam that maintains its diameter over a longer distance.</li>
+    </ul>
+    <p>Many laser modules come with a collimating lens already integrated. If not, one would be added to ensure the beam that enters the rest of افت optical system is well-defined.</p>
+  </div>
+
+  <div class="popup" id="popup-excitation-filter">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Excitation Filter</h3>
+    <p>An optical filter placed after the laser source to "clean up" the laser light.</p>
+    <h4>Purpose:</h4>
+    <ul>
+      <li>Laser diodes, especially cheaper ones, might emit light at wavelengths slightly different from their main specified wavelength, or have some broader spectral noise.</li>
+      <li>The excitation filter is a bandpass filter that selectively transmits only a narrow band of wavelengths around the desired laser line (e.g., 405nm).</li>
+      <li>This ensures that any fluorescence observed from the sample is truly due to excitation at 405nm and not from other spurious wavelengths from the laser.</li>
+    </ul>
+    <p>While not always strictly necessary for very basic setups if the laser is of good quality, it improves the accuracy of fluorescence measurements.</p>
+  </div>
+
+  <div class="popup" id="popup-focusing-lens">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Focusing Lens</h3>
+    <p>A lens used to converge the laser beam to a small spot.</p>
+    <h4>Function:</h4>
+    <ul>
+      <li>Takes the collimated (parallel) laser beam.</li>
+      <li>Focuses it down to a small point within the flow cell or cuvette where the sample will pass.</li>
+      <li>This increases the light intensity (power per unit area) at the interrogation point, which can lead to stronger scattering and fluorescence signals from particles.</li>
+      <li>Defines a smaller, more precise volume for particle detection.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-emission-filter">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Emission Filter</h3>
+    <p>A critical optical filter placed *before* the detector (photodiode) in fluorescence detection setups.</p>
+    <h4>Purpose:</h4>
+    <ul>
+      <li>When the laser illuminates a particle, two main things happen: some laser light is scattered, and if the particle is fluorescent (e.g., Nile Red stained plastic), it emits light at a *longer* wavelength.</li>
+      <li>The scattered laser light (at 405nm) is usually much more intense than the emitted fluorescence. Without a filter, the detector would be overwhelmed by this scattered laser light, making it impossible to see the weaker fluorescence signal.</li>
+      <li>The emission filter is typically a <strong>longpass filter</strong>. It blocks the shorter wavelength laser light (e.g., blocks light below ~450-500nm) and transmits the longer wavelength fluorescent light (e.g., allows light above ~500nm, where Nile Red fluorescence occurs).</li>
+    </ul>
+    <p><strong>This filter is essential for distinguishing true fluorescence from scattered laser light.</strong></p>
+  </div>
+
+  <div class="popup" id="popup-power-supply">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Power Supply</h3>
+    <p>Provides the necessary electrical power to all components of the device.</p>
+    <h4>Requirements:</h4>
+    <ul>
+      <li><strong>Voltage Levels:</strong> Different components may need different voltages (e.g., 5V for Arduino and laser module, specific voltages for op-amps in the detector circuit).</li>
+      <li><strong>Stability:</strong> A stable and clean power supply is important to minimize electrical noise that could interfere with sensitive measurements.</li>
+      <li><strong>Sources:</strong>
+        <ul>
+          <li>USB power (e.g., from a computer or USB adapter) is often sufficient for Arduino and low-power peripherals.</li>
+          <li>Batteries can be used for portability.</li>
+          <li>A dedicated benchtop power supply or custom-built power regulation circuit might be used for more complex needs or higher power components.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-display-oled">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>Display (OLED/LCD)</h3>
+    <p>An optional component to provide real-time feedback or results directly on the device.</p>
+    <h4>Types:</h4>
+    <ul>
+      <li><strong>LCD (Liquid Crystal Display):</strong> Common, available in character-based or graphical forms. Can be very low power.</li>
+      <li><strong>OLED (Organic Light Emitting Diode):</strong> Brighter, higher contrast, better viewing angles than many LCDs. Pixels emit their own light, so black is truly black. Often use I2C or SPI interfaces, making them easy to connect to an Arduino.</li>
+    </ul>
+    <h4>Information Displayed:</h4>
+    <ul>
+      <li>Particle count.</li>
+      <li>Device status (e.g., "Running", "Calibrating").</li>
+      <li>Basic settings or parameters.</li>
+      <li>Simple graphs or charts (on graphical displays).</li>
+    </ul>
+    <p>For this project, a small I2C OLED display (e.g., 0.96" or 1.3") is a popular choice due to its ease of use with Arduino.</p>
+  </div>
+
+  <div class="popup" id="popup-user-interface">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>User Interface (Buttons/Controls)</h3>
+    <p>Physical controls that allow the user to interact with the device.</p>
+    <h4>Examples:</h4>
+    <ul>
+      <li><strong>Buttons:</strong>
+        <ul>
+          <li>Start/Stop measurement.</li>
+          <li>Reset count.</li>
+          <li>Navigate menus on a display.</li>
+          <li>Adjust settings (e.g., detection threshold, though this is often set in code).</li>
+        </ul>
+      </li>
+      <li><strong>Potentiometers/Rotary Encoders:</strong> For adjusting parameters more finely.</li>
+      <li><strong>Switches:</strong> Power on/off.</li>
+    </ul>
+    <p>A simple interface might just have one or two buttons for basic operations. The Arduino reads the state of these buttons to trigger actions in the software.</p>
+  </div>
+
+  <!-- Hardware & Software Popups -->
+  <div class="popup" id="popup-hardware">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🔩 Hardware Assembly</h3>
+    <p>This involves the physical construction of the microplastic detector. Key steps include:</p>
+    <h4>1. Enclosure/Housing:</h4>
+    <ul>
+      <li>Creating a light-tight enclosure to prevent ambient light from interfering with the detector. This can be made from opaque project boxes, 3D-printed parts, or even simple materials like black cardboard for prototyping.</li>
+      <li>Mounting points for all components.</li>
+    </ul>
+    <h4>2. Optical Alignment:</h4>
+    <ul>
+      <li><strong>Critical Step:</strong> Precisely aligning the laser, lenses, flow cell, and detector is crucial for optimal performance.</li>
+      <li>The laser beam must pass through the center of the flow cell's interrogation zone.</li>
+      <li>The collection optics (if any) and detector must be aligned to efficiently capture light from this zone.</li>
+      <li>Optical filters must be placed correctly in the light path.</li>
+    </ul>
+    <h4>3. Flow Cell Integration:</h4>
+    <ul>
+      <li>Securely mounting the flow cell.</li>
+      <li>Connecting tubing for sample inlet and outlet. Ensuring no leaks.</li>
+    </ul>
+    <h4>4. Electronics Assembly:</h4>
+    <ul>
+      <li>Wiring the Arduino, laser module, photodiode amplifier circuit, display, and any buttons.</li>
+      <li>Soldering components to a perfboard or using a custom PCB for a more robust build.</li>
+      <li>Ensuring proper power connections and grounding to minimize electrical noise.</li>
+    </ul>
+    <h4>5. 3D Printed Parts (Optional but common):</h4>
+    <ul>
+      <li>Custom mounts for optical components.</li>
+      <li>The flow cell itself.</li>
+      <li>Parts of the enclosure.</li>
+    </ul>
+    <p>Careful assembly and iterative adjustments are often needed to get the system working correctly.</p>
+  </div>
+
+  <div class="popup" id="popup-software">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>👨‍💻 Software & Algorithms</h3>
+    <p>The software brings the hardware to life, controlling the detection process and analyzing data.</p>
+    <h4>Arduino Code (Firmware):</h4>
+    <ul>
+      <li><strong>Setup:</strong> Initializes pins, serial communication, display, etc.</li>
+      <li><strong>Main Loop:</strong>
+        <ul>
+          <li>Reads analog values from the photodiode circuit (via ADC).</li>
+          <li>Applies a threshold: If the signal exceeds the threshold, it indicates a potential particle.
+            <code>if (analogRead(sensorPin) > threshold) { /* particle detected */ }</code>
+          </li>
+          <li><strong>Debouncing/Pulse Detection:</strong> Implements logic to count distinct particle events rather than multiple counts for a single long pulse. This might involve looking for signal peaks or ensuring the signal drops below the threshold before counting again.</li>
+          <li>Updates particle count.</li>
+          <li>Displays information on the OLED/LCD.</li>
+          <li>Sends data to a computer via serial port (e.g., <code>Serial.println(particleCount);</code>).</li>
+        </ul>
+      </li>
+      <li><strong>Calibration Routines (Optional):</strong> Code to help set the detection threshold or calibrate against known particle sizes.</li>
+      <li><strong>Libraries:</strong> Uses libraries for I2C communication (for OLED), etc.</li>
+    </ul>
+    <h4>Python Scripts (Data Analysis & Visualization - on PC):</h4>
+    <ul>
+      <li><strong>Serial Data Acquisition:</strong> Uses libraries like <code>pyserial</code> to read data sent from the Arduino.</li>
+      <li><strong>Data Parsing:</strong> Extracts particle counts or raw signal data.</li>
+      <li><strong>Advanced Signal Processing (Optional):</strong> If raw data is sent, Python can perform more complex filtering, baseline correction, and peak finding (e.g., using <code>SciPy</code>).</li>
+      <li><strong>Data Logging:</strong> Saves data to files (CSV, text).</li>
+      <li><strong>Visualization:</strong> Uses libraries like <code>Matplotlib</code> or <code>Plotly</code> to create graphs of particle counts over time, estimated size distributions, etc.</li>
+      <li><strong>GUI (Optional):</strong> Could use libraries like <code>Tkinter</code> or <code>PyQt</code> to create a graphical user interface for controlling the device or viewing data.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-data-analysis">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>📊 Data Analysis Workflow</h3>
+    <p>The process of transforming raw sensor readings into meaningful information about microplastic contamination.</p>
+    <h4>1. Raw Signal Acquisition:</h4>
+    <ul>
+      <li>The photodiode generates an analog electrical signal proportional to the light it receives.</li>
+      <li>This signal is amplified and then digitized by the Arduino's ADC. This results in a stream of numerical values over time.</li>
+    </ul>
+    <h4>2. Noise Reduction & Filtering (Digital):</h4>
+    <ul>
+      <li>Raw signals can be noisy. Digital filters (e.g., moving average, Savitzky-Golay) can be applied (either on Arduino if simple, or more likely in Python if complex) to smooth the data and remove high-frequency noise.</li>
+    </ul>
+    <h4>3. Baseline Correction:</h4>
+    <ul>
+      <li>The signal might have a varying baseline (background level). This baseline needs to be subtracted or accounted for so that particle peaks are measured relative to the local background.</li>
+    </ul>
+    <h4>4. Peak Detection:</h4>
+    <ul>
+      <li>Algorithms identify peaks in the signal that rise significantly above the baseline/threshold. Each valid peak corresponds to a particle event.</li>
+      <li>Parameters for peak detection: minimum height, minimum distance between peaks.</li>
+    </ul>
+    <h4>5. Particle Counting:</h4>
+    <ul>
+      <li>The number of detected peaks gives the particle count for the analyzed sample volume.</li>
+    </ul>
+    <h4>6. Size & Property Estimation (More Advanced):</h4>
+    <ul>
+      <li><strong>Pulse Height/Area:</strong> The height or area of a signal pulse can be correlated with particle size (larger particles generally scatter/fluoresce more light). This requires calibration with particles of known sizes.</li>
+      <li><strong>Dual-Channel Analysis:</strong> If the system could separately measure scattered light and fluorescent light (e.g., using two detectors with different filters or a dichroic mirror), it could help differentiate plastic from non-plastic particles. Our current design focuses on fluorescence after staining.</li>
+    </ul>
+    <h4>7. Normalization & Reporting:</h4>
+    <ul>
+      <li>Particle counts are typically normalized by the volume of water analyzed (e.g., particles/mL or particles/L).</li>
+      <li>Results are presented in tables or graphs (e.g., concentration, size distribution histograms).</li>
+    </ul>
+    <p>For a basic home-built device, the analysis might be simplified to threshold-based counting on the Arduino. More sophisticated steps are usually performed in post-processing on a PC with Python.</p>
+  </div>
+
+
+  <!-- Results & Future Work Popups -->
+  <div class="popup" id="popup-experimental-results">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>📈 Experimental Results</h3>
+    <p>Presentation of data obtained from testing the microplastic detector. This section would typically showcase the device's performance.</p>
+    <h4>Key Performance Metrics:</h4>
+    <ul>
+      <li><strong>Detection Limit (Sensitivity):</strong>
+        <ul>
+          <li>What is the smallest size of microplastic the device can reliably detect? (e.g., 5µm, 10µm, 20µm).</li>
+          <li>What is the lowest concentration of microplastics it can detect?</li>
+          <li>How is this determined? (e.g., using standard polystyrene microspheres of known sizes and concentrations).</li>
+        </ul>
+      </li>
+      <li><strong>Accuracy & Precision:</strong>
+        <ul>
+          <li><strong>Accuracy:</strong> How close are the device's measurements to the true values (e.g., when testing samples with known concentrations)?</li>
+          <li><strong>Precision (Repeatability):</strong> How consistent are the results when measuring the same sample multiple times? (Often expressed as standard deviation or coefficient of variation).</li>
+        </ul>
+      </li>
+      <li><strong>Selectivity (Plastic vs. Non-Plastic):</strong>
+        <ul>
+          <li>How well does the device distinguish between plastic particles (especially when stained with Nile Red) and other non-plastic particulates (e.g., sediment, organic matter)?</li>
+          <li>Results from testing mixed samples or samples with potential interferents.</li>
+        </ul>
+      </li>
+      <li><strong>Calibration Curves:</strong>
+        <ul>
+          <li>Graphs showing the device's response (e.g., signal intensity, particle count rate) versus known concentrations or sizes of microplastics. These are essential for quantitative measurements.</li>
+        </ul>
+      </li>
+      <li><strong>Comparison with Existing Methods (if applicable):</strong>
+        <ul>
+          <li>How do the results from this device compare to those from more established methods (e.g., microscopy, FTIR) for the same samples? This helps validate the device's performance, though direct equivalence is not expected for a low-cost system.</li>
+        </ul>
+      </li>
+      <li><strong>Real-World Sample Testing:</strong>
+        <ul>
+          <li>Results from testing actual tap water, river water, or other environmental samples.</li>
+          <li>Qualitative or semi-quantitative findings.</li>
+        </ul>
+      </li>
+    </ul>
+    <p>Results would be presented using tables, graphs (bar charts, scatter plots, histograms), and possibly images (e.g., of detected particles if microscopy correlation is done).</p>
+  </div>
+
+  <div class="popup" id="popup-future-work">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🚀 Future Work & Potential Improvements</h3>
+    <p>Ideas for enhancing the capabilities, usability, and performance of the microplastic detector.</p>
+    <h4>1. Enhanced Sensitivity & Smaller Particle Detection:</h4>
+    <ul>
+      <li>Improved optics (higher quality lenses, more precise alignment).</li>
+      <li>More sensitive photodetector (e.g., Avalanche Photodiode, though this increases cost/complexity).</li>
+      <li>Advanced signal processing techniques (e.g., lock-in amplification if laser is modulated).</li>
+    </ul>
+    <h4>2. Polymer Type Identification (Advanced):</h4>
+    <ul>
+      <li>Exploring multi-wavelength excitation/detection or integrating a very basic spectrometer could hint at polymer types, but this is a significant step up in complexity and cost. Raman spectroscopy integration is a long-term research goal for some.</li>
+    </ul>
+    <h4>3. Machine Learning for Particle Classification:</h4>
+    <ul>
+      <li>If more detailed signal characteristics (pulse shape, duration, multi-channel data) are captured, machine learning models could be trained to:
+        <ul>
+          <li>Better distinguish plastics from non-plastics.</li>
+          <li>Potentially classify different types of plastics or sizes with higher accuracy.</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>4. Automation & Higher Throughput:</h4>
+    <ul>
+      <li>Automated sample loading using pumps and potentially autosamplers.</li>
+      <li>Continuous monitoring capabilities.</li>
+    </ul>
+    <h4>5. IoT Integration & Data Sharing:</h4>
+    <ul>
+      <li>Equipping the device with Wi-Fi/Bluetooth (e.g., using ESP32 instead of Arduino Nano) to upload data to cloud platforms.</li>
+      <li>Creating a citizen science network for sharing and mapping microplastic data.</li>
+    </ul>
+    <h4>6. Improved User Interface & User Experience (UX):</h4>
+    <ul>
+      <li>More sophisticated onboard display and controls.</li>
+      <li>A dedicated mobile or desktop application for device control, data visualization, and analysis.</li>
+      <li>Easier calibration procedures.</li>
+    </ul>
+    <h4>7. Cost Reduction & Accessibility:</h4>
+    <ul>
+      <li>Continuously exploring cheaper alternatives for components without sacrificing too much performance.</li>
+      <li>Developing clearer assembly guides and educational materials.</li>
+    </ul>
+    <h4>8. Miniaturization & Portability:</h4>
+    <ul>
+      <li>Designing a more compact and robust device for field use.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-community">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🌍 Community & Open Source</h3>
+    <p>This project thrives on collaboration and open sharing of knowledge and designs.</p>
+    <h4>Open Source Principles:</h4>
+    <ul>
+      <li><strong>Hardware Designs:</strong> Schematics, 3D models for printed parts, and bill of materials (BOM) are made publicly available (e.g., on GitHub, Thingiverse).</li>
+      <li><strong>Software Code:</strong> Arduino firmware and any Python analysis scripts are shared under an open-source license (e.g., MIT, GPL).</li>
+      <li><strong>Documentation:</strong> Assembly instructions, user guides, and research findings are openly accessible.</li>
+    </ul>
+    <h4>Benefits of an Open Approach:</h4>
+    <ul>
+      <li><strong>Accessibility:</strong> Allows anyone to build, modify, and improve upon the design.</li>
+      <li><strong>Collaboration:</strong> Enables a global community of makers, scientists, students, and enthusiasts to contribute.</li>
+      <li><strong>Innovation:</strong> Faster development cycles as different people experiment with new ideas.</li>
+      <li><strong>Education:</strong> Provides a valuable learning resource for STEM education.</li>
+      <li><strong>Cost Reduction:</strong> Shared designs can help find more affordable solutions.</li>
+    </ul>
+    <h4>How to Get Involved:</h4>
+    <ul>
+      <li><strong>Build the Device:</strong> Follow the guides and try to replicate or adapt the detector.</li>
+      <li><strong>Provide Feedback:</strong> Share your experiences, challenges, and successes.</li>
+      <li><strong>Contribute Improvements:</strong>
+        <ul>
+          <li>Suggest modifications to the hardware design.</li>
+          <li>Improve the software code (fix bugs, add features).</li>
+          <li>Enhance the documentation.</li>
+          <li>Design new experiments or calibration methods.</li>
+        </ul>
+      </li>
+      <li><strong>Share Your Data (Responsibly):</strong> If you collect data, consider how it might be shared with the wider community or research projects (always ensuring privacy and data quality).</li>
+      <li><strong>Join Online Forums/Groups:</strong> Connect with others working on similar projects. (e.g., GitHub discussions, specific forums for DIY environmental sensors).</li>
+    </ul>
+    <p>By working together, we can advance the field of accessible microplastic detection and empower more people to understand and address this environmental challenge.</p>
+  </div>
+
+  <!-- Optical System Popups -->
+  <div class="popup" id="popup-optical-path">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🔎 Optical Path Design</h3>
+    <p>The optical path is the route light takes from the laser source, through the sample, to the detector. Careful design is crucial for maximizing signal and minimizing noise.</p>
+    <h4>Key Stages & Components:</h4>
+    <ol>
+      <li><strong>Laser Source:</strong> 405nm laser diode module.
+        <ul>
+          <li><em>(Optional) Collimating Lens:</em> Ensures the laser beam is parallel if not already.</li>
+          <li><em>(Optional) Excitation Filter:</em> Cleans up the laser spectrum, passing only 405nm light.</li>
+        </ul>
+      </li>
+      <li><strong>Beam Focusing:</strong>
+        <ul>
+          <li><em>Focusing Lens:</em> Concentrates the laser beam to a small spot within the flow cell. This increases the power density at the interrogation point.</li>
+        </ul>
+      </li>
+      <li><strong>Sample Interrogation:</strong>
+        <ul>
+          <li><em>Flow Cell:</em> The sample flows through this transparent chamber. The focused laser beam intersects the sample stream. Particles passing through the beam will scatter light and, if stained/fluorescent, emit fluorescence.</li>
+        </ul>
+      </li>
+      <li><strong>Light Collection (Fluorescence Path):</strong>
+        <ul>
+          <li><em>Collection Lens (Objective):</em> Positioned typically at 90 degrees to the excitation laser beam path to minimize collection of scattered laser light and maximize collection of emitted fluorescence. Gathers light emitted from the particles.</li>
+          <li><em>Emission Filter (Longpass/Bandpass):</em> Placed after the collection lens and BEFORE the detector. This is critical. It blocks any scattered 405nm laser light and only allows the longer-wavelength fluorescent light (e.g., >500nm for Nile Red) to pass.</li>
+        </ul>
+      </li>
+      <li><strong>Detection:</strong>
+        <ul>
+          <li><em>Photodiode Detector:</em> Converts the filtered fluorescent light into an electrical signal.</li>
+        </ul>
+      </li>
+    </ol>
+    <h4>Design Considerations:</h4>
+    <ul>
+      <li><strong>Alignment:</strong> All components must be precisely aligned. Misalignment significantly reduces signal strength.</li>
+      <li><strong>Light Tightness:</strong> The entire optical path around the sample and detector should be shielded from ambient light.</li>
+      <li><strong>Choice of Lenses:</strong> Focal lengths and numerical apertures (NA) of lenses are chosen to optimize focusing and light collection for the specific flow cell dimensions and detector size.</li>
+      <li><strong>Minimizing Stray Light:</strong> Internal baffles or blackening of surfaces within the optical setup can reduce stray light that might reach the detector.</li>
+    </ul>
+  </div>
+
+  <div class="popup" id="popup-signal-processing">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>📈 Signal Processing</h3>
+    <p>Signal processing involves converting the raw electrical output from the photodiode into meaningful data (e.g., particle counts).</p>
+    <h4>Analog Signal Conditioning (Typically before ADC):</h4>
+    <ol>
+      <li><strong>Transimpedance Amplifier (TIA):</strong>
+        <ul>
+          <li>Photodiodes often produce a small current proportional to light intensity. A TIA converts this current into a voltage. This is usually the first stage of amplification.</li>
+          <li><em>Key component:</em> Operational Amplifier (Op-Amp).</li>
+        </ul>
+      </li>
+      <li><strong>Further Amplification (Voltage Amplifier):</strong>
+        <ul>
+          <li>The voltage from the TIA might still be too small for the Arduino's ADC. Additional op-amp stages can provide more voltage gain.</li>
+        </ul>
+      </li>
+      <li><strong>Filtering (Analog):</strong>
+        <ul>
+          <li><em>Low-pass filter:</em> Removes high-frequency noise (e.g., from power lines, digital electronics).</li>
+          <li><em>High-pass filter (AC Coupling):</em> Can be used to remove the DC component of the signal, focusing on the changes (pulses) caused by particles.</li>
+          <li><em>Band-pass filter:</em> Combines low-pass and high-pass to allow only signals within a certain frequency range, relevant to the expected particle transit time.</li>
+        </ul>
+      </li>
+    </ol>
+    <h4>Digital Signal Processing (Typically on MCU or PC):</h4>
+    <ol>
+      <li><strong>Analog-to-Digital Conversion (ADC):</strong>
+        <ul>
+          <li>The Arduino's MCU samples the analog voltage at regular intervals and converts it to a digital number.</li>
+        </ul>
+      </li>
+      <li><strong>Digital Filtering (Optional):</strong>
+        <ul>
+          <li>Moving average, median filter, or more complex filters (e.g., Savitzky-Golay) can be applied to the digital data to further reduce noise.</li>
+        </ul>
+      </li>
+      <li><strong>Baseline Estimation/Subtraction:</strong>
+        <ul>
+          <li>Determining the background signal level and subtracting it, so peaks are measured relative to this baseline.</li>
+        </ul>
+      </li>
+      <li><strong>Thresholding & Peak Detection:</strong>
+        <ul>
+          <li>A threshold is set. Signals rising above this threshold are considered potential particle events.</li>
+          <li>Algorithms identify distinct peaks, count them, and can measure their properties (height, width, area).</li>
+        </ul>
+      </li>
+      <li><strong>Data Logging & Analysis:</strong>
+        <ul>
+          <li>Counting events, calculating concentrations, estimating size distributions (if calibrated).</li>
+        </ul>
+      </li>
+    </ol>
+    <p>The complexity of signal processing depends on the desired sensitivity and accuracy. Simple systems might only use a TIA and basic thresholding on the Arduino.</p>
+  </div>
+
+  <div class="popup" id="popup-calibration">
+    <button class="close-btn" onclick="closePopup()">&times;</button>
+    <h3>🛠️ Calibration & Accuracy</h3>
+    <p>Calibration is the process of relating the device's output signals to known physical quantities (e.g., particle size and concentration). It's essential for obtaining accurate and reliable measurements.</p>
+    <h4>1. Size Calibration:</h4>
+    <ul>
+      <li><strong>Purpose:</strong> To correlate the signal intensity (e.g., pulse height or area from the photodiode) with the actual size of the microplastic particles.</li>
+      <li><strong>Method:</strong>
+        <ul>
+          <li>Use commercially available "microsphere standards" – these are solutions containing plastic beads of very uniform and known sizes (e.g., 5µm, 10µm, 20µm polystyrene spheres).</li>
+          <li>Run samples of these different sized microspheres through the detector.</li>
+          <li>Record the average signal intensity produced by each size.</li>
+          <li>Plot a calibration curve: Signal Intensity vs. Particle Size. This curve can then be used to estimate the size of unknown particles in real samples.</li>
+        </ul>
+      </li>
+      <li><strong>Considerations:</strong>
+        <ul>
+          <li>The relationship might not be linear across all sizes.</li>
+          <li>Refractive index and shape differences between calibration standards and real-world microplastics can affect accuracy.</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>2. Concentration Calibration:</h4>
+    <ul>
+      <li><strong>Purpose:</strong> To ensure the device accurately counts the number of particles per unit volume.</li>
+      <li><strong>Method:</strong>
+        <ul>
+          <li>Use microsphere standards of a known concentration (particles/mL).</li>
+          <li>Run a precise volume of this standard solution through the detector and record the particle count.</li>
+          <li>Compare the device's count to the known count. Adjustments to flow rate, detection volume, or software counting parameters might be needed.</li>
+          <li>Alternatively, if flow rate is accurately known, one can verify that the number of events matches the expected number for a given concentration passing through.</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>3. Fluorescence Intensity Calibration (if applicable):</h4>
+    <ul>
+      <li>If trying to quantify the amount of fluorescent material, one might use solutions with known concentrations of a fluorescent dye (like Nile Red itself, or fluorescently labeled beads) to calibrate the fluorescence signal intensity.</li>
+    </ul>
+    <h4>Ensuring Accuracy:</h4>
+    <ul>
+      <li><strong>Regular Recalibration:</strong> Calibration should be checked periodically, as device performance can drift over time (e.g., laser power changes, detector sensitivity changes).</li>
+      <li><strong>Blanks & Controls:</strong>
+        <ul>
+          <li>Run "blank" samples (e.g., filtered, particle-free water) to determine the background noise level and ensure no false positives.</li>
+          <li>Use "control" samples with known particle characteristics as regular checks.</li>
+        </ul>
+      </li>
+      <li><strong>Replicates:</strong> Analyze each sample multiple times to assess precision and average the results.</li>
+      <li><strong>Understanding Limitations:</strong> Be aware of the device's inherent limitations (e.g., detection range, types of plastics it can see well). A low-cost device will not match the accuracy of expensive lab equipment.</li>
+    </ul>
+    <p>Proper calibration is what transforms a qualitative particle detector into a more quantitative measurement tool.</p>
+  </div>
+
+
+  <!-- Controls Panel -->
+  <div class="controls-panel">
+    <button class="control-btn" onclick="toggleParticles()">Toggle Particles</button>
+    <button class="control-btn" onclick="resetView()">Reset View</button>
+  </div>
+
+  <script>
+    // Enhanced JavaScript for Interactivity, Popups, Scrolling, Particles, and Mindmap
+
+    // --- Particle Animation ---
+    const particleContainer = document.getElementById('particles');
+    const numParticles = 50;
+
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.width = `${Math.random() * 3 + 2}px`;
+      particle.style.height = particle.style.width;
+      particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+      particle.style.animationDelay = `${Math.random() * 5}s`;
+      particleContainer.appendChild(particle);
+    }
+
+    let particlesEnabled = true;
+    function initParticles() {
+      if (particlesEnabled && particleContainer) {
+        for (let i = 0; i < numParticles; i++) {
+          createParticle();
+        }
+      }
+    }
+
+    function toggleParticles() {
+        particlesEnabled = !particlesEnabled;
+        if (particleContainer) {
+            if (particlesEnabled) {
+                initParticles();
+            } else {
+                particleContainer.innerHTML = '';
+            }
+        }
+    }
+    // --- Scroll Progress & Active Nav Item ---
+    const scrollProgressBar = document.getElementById('scrollProgress');
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('header, .section'); // Include header as a section
+
+    function updateScrollProgress() {
+      if (!scrollProgressBar) return;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      scrollProgressBar.style.width = `${progress}%`;
+    }
+
+    function updateActiveNavItem() {
+      let currentSectionId = '';
+      const offset = window.innerHeight * 0.4; // 40% from the top
+      // console.log(`DEBUG: ScrollY: ${window.pageYOffset.toFixed(2)}, Offset Trigger Point: ${offset.toFixed(2)}, Window Height: ${window.innerHeight}`);
+
+      sections.forEach(section => {
+        const sectionTrueTop = section.offsetTop;
+        const detectionPoint = sectionTrueTop - offset; // Point at which section should become active
+        const sectionEffectiveBottom = detectionPoint + section.offsetHeight; // End of this section's "detection zone"
+
+        // console.log(`DEBUG: Section: ${section.id}, True Top: ${sectionTrueTop.toFixed(2)}, Detection Pt: ${detectionPoint.toFixed(2)}, Effective Bottom: ${sectionEffectiveBottom.toFixed(2)}`);
+
+        if (window.pageYOffset >= detectionPoint && window.pageYOffset < sectionEffectiveBottom) {
+          currentSectionId = section.id;
+        }
+      });
+
+      if (!currentSectionId) {
+        if (window.pageYOffset + window.innerHeight >= document.documentElement.scrollHeight - 20) {
+            if (sections.length > 0) {
+                currentSectionId = sections[sections.length - 1].id;
+                // console.log("DEBUG: Fallback to LAST section (at page bottom):", currentSectionId);
+            }
+        }
+        else if (sections.length > 0 && window.pageYOffset < (sections[0].offsetTop - offset + (sections[0].offsetHeight / 2) ) ) {
+            // More lenient check for the first section: if we are above the halfway point of its detection zone from top
+            currentSectionId = sections[0].id;
+            // console.log("DEBUG: Fallback to FIRST section (at page top or before first detection):", currentSectionId);
+        } else {
+            for (let i = sections.length - 1; i >= 0; i--) {
+                if (window.pageYOffset >= (sections[i].offsetTop - offset)) {
+                    currentSectionId = sections[i].id;
+                    // console.log("DEBUG: Fallback - closest section from bottom up whose detection point is passed:", currentSectionId);
+                    break;
+                }
+            }
+        }
+      }
+      if (!currentSectionId && sections.length > 0 && window.pageYOffset < offset ) {
+          currentSectionId = sections[0].id; // Default to first if all else fails and near top
+          // console.log("DEBUG: Fallback to FIRST section (very top, final check if all else failed):", currentSectionId);
+      }
+
+      // console.log('DEBUG: Final determined currentSectionId:', currentSectionId);
+
+      navItems.forEach(item => {
+        const tooltip = item.querySelector('.nav-tooltip');
+        if (tooltip) {
+            const tooltipText = tooltip.textContent;
+            let sectionIdToMatch = tooltipText.toLowerCase();
+            sectionIdToMatch = sectionIdToMatch.replace(/\s*&\s*/g, '-and-');
+            sectionIdToMatch = sectionIdToMatch.replace(/[\s_]+/g, '-');
+            sectionIdToMatch = sectionIdToMatch.replace(/[^\w-]+/g, '');
+
+            // console.log(`DEBUG: NavItem Tooltip: "${tooltipText}", Transformed ID for matching: "${sectionIdToMatch}"`);
+
+            let isActive = false;
+            if (currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch === 'header')) {
+                 isActive = true;
+            } else if (sectionIdToMatch === currentSectionId) {
+                 isActive = true;
+            }
+
+            if (isActive) {
+                // console.log(`DEBUG: ACTIVATING nav item for: ${sectionIdToMatch} (current page section: ${currentSectionId})`);
+                item.classList.add('active');
+            } else {
+                // console.log(`DEBUG: DEACTIVATING nav item for: ${sectionIdToMatch} (current page section: ${currentSectionId})`);
+                item.classList.remove('active');
+            }
+        }
+      });
+    }
+
+
+    // --- Smooth Scrolling ---
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        window.scrollTo({
+          top: section.offsetTop - 80, // Adjusted offset for fixed header/nav
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // --- Popup Functionality ---
+    const overlay = document.getElementById('overlay');
+    let currentPopup = null;
+
+    function showPopup(popupId) {
+      if (currentPopup) {
+        closePopup(); // Close any existing popup first
+      }
+      const popup = document.getElementById(popupId);
+      if (popup && overlay) {
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
+        currentPopup = popup;
+        setTimeout(() => {
+          if(currentPopup) currentPopup.style.opacity = 1;
+        }, 10);
+         document.body.style.overflow = 'hidden';
+      } else {
+        console.error("Popup or overlay not found for ID:", popupId);
+      }
+    }
+
+    function closePopup() {
+      if (currentPopup && overlay) {
+        currentPopup.style.display = 'none';
+        overlay.style.display = 'none';
+        currentPopup.style.opacity = 0;
+        currentPopup = null;
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && currentPopup) {
+            closePopup();
+        }
+    });
+
+    // --- Mindmap Connections ---
+    const mindmapConnectionsSVG = document.getElementById('mindmapConnections');
+
+    function getElementCenter(elementId) {
+        const elem = document.getElementById(elementId);
+        if (!elem || !mindmapConnectionsSVG) return null;
+
+        const mindmapRect = mindmapConnectionsSVG.getBoundingClientRect();
+        const elemRect = elem.getBoundingClientRect();
+
+        const x = elemRect.left + elemRect.width / 2 - mindmapRect.left;
+        const y = elemRect.top + elemRect.height / 2 - mindmapRect.top;
+
+        return { x, y };
+    }
+
+    function drawConnection(fromNodeId, toNodeId, svgContainer) {
+        const start = getElementCenter(fromNodeId);
+        const end = getElementCenter(toNodeId);
+
+        if (start && end && svgContainer) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', start.x);
+            line.setAttribute('y1', start.y);
+            line.setAttribute('x2', end.x);
+            line.setAttribute('y2', end.y);
+            line.classList.add('connection-line');
+            svgContainer.appendChild(line);
+        }
+    }
+
+    function drawAllMindmapConnections() {
+        if (!mindmapConnectionsSVG) return;
+        mindmapConnectionsSVG.innerHTML = '';
+
+        const connections = [
+            { from: 'node-main', to: 'node-laser' },
+            { from: 'node-main', to: 'node-optics' },
+            { from: 'node-main', to: 'node-flowcell' },
+            { from: 'node-main', to: 'node-detector' },
+            { from: 'node-main', to: 'node-mcu' },
+            { from: 'node-optics', to: 'node-lens1' },
+            { from: 'node-optics', to: 'node-filter1' },
+            { from: 'node-optics', to: 'node-lens2' },
+            { from: 'node-optics', to: 'node-filter2' },
+            { from: 'node-mcu', to: 'node-power' },
+            { from: 'node-mcu', to: 'node-display' },
+            { from: 'node-mcu', to: 'node-interface' }
+        ];
+
+        connections.forEach(conn => {
+            drawConnection(conn.from, conn.to, mindmapConnectionsSVG);
+        });
+    }
+
+    // --- Control Panel Functions ---
+    function resetView() {
+        scrollToSection('header');
+        if (currentPopup) {
+            closePopup();
+        }
+    }
+
+    // --- Event Listeners ---
+    window.addEventListener('scroll', () => {
+      updateScrollProgress();
+      updateActiveNavItem();
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            drawAllMindmapConnections();
+            updateActiveNavItem();
+        }, 250);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initParticles();
+      updateScrollProgress();
+      updateActiveNavItem();
+      drawAllMindmapConnections();
+
+      navItems.forEach(item => {
+          const tooltip = item.querySelector('.nav-tooltip');
+          if (tooltip && !item.hasAttribute('onclick')) {
+              const sectionId = tooltip.textContent.toLowerCase().replace(/\s+/g, '-');
+              item.addEventListener('click', () => scrollToSection(sectionId === 'overview' ? 'header' : sectionId));
+          }
+      });
+
+      const popupTriggers = document.querySelectorAll('[onclick^="showPopup"]');
+      popupTriggers.forEach(trigger => {
+          const onclickAttr = trigger.getAttribute('onclick');
+          const popupIdMatch = onclickAttr.match(/showPopup\('([^']+)'\)/);
+          if (popupIdMatch && popupIdMatch[1]) {
+              const popupId = popupIdMatch[1];
+              trigger.removeAttribute('onclick');
+              trigger.addEventListener('click', () => showPopup(popupId));
+              trigger.style.cursor = 'pointer';
+          }
+      });
+    });
+
+  </script>
+</body>
+</html>
