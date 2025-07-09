@@ -25,24 +25,23 @@
         }
 
         /* Particle Animation Background */
-        .particle-container-remake { /* Updated class name */
+        .particle-container-remake {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1; /* Ensure it's behind content */
+            z-index: 1;
         }
 
-        .particle-remake { /* Updated class name */
+        .particle-remake {
             position: absolute;
-            width: 3px; /* Slightly smaller */
+            width: 3px;
             height: 3px;
             background: #00d4ff;
             border-radius: 50%;
-            opacity: 0.5; /* Slightly more subtle */
-            /* animation is set by JS for @keyframes float */
+            opacity: 0.5;
         }
 
         @keyframes float {
@@ -51,7 +50,7 @@
                 opacity: 0;
             }
             10% {
-                opacity: 0.5; /* Match particle opacity */
+                opacity: 0.5;
             }
             90% {
                 opacity: 0.5;
@@ -99,6 +98,15 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        .content-section-remake {
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.02);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.05);
         }
 
         .content-section-remake h2 {
@@ -260,7 +268,7 @@
         }
         .mindmap-remake {
             position: relative;
-            min-height: 500px;
+            min-height: 600px; /* Increased min-height for tree */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -270,21 +278,21 @@
             justify-content: center;
             align-items: stretch;
             gap: 1.5rem;
-            margin: 1.5rem 0;
+            margin: 2rem 0; /* Increased vertical margin between levels for tree */
             flex-wrap: wrap;
             width: 100%;
         }
-         .mindmap-level-remake:nth-of-type(1) {
-            margin-bottom: 2.5rem;
+         .mindmap-level-remake:nth-of-type(1) { /* Root node level */
+            margin-bottom: 3rem;
         }
-        .mindmap-level-remake:nth-of-type(2) {
+        .mindmap-level-remake:nth-of-type(2) { /* Children of root */
             gap: 2rem;
         }
-        .mindmap-level-remake:nth-of-type(3) {
+        .mindmap-level-remake:nth-of-type(3) { /* Grandchildren (e.g. from optics) */
             gap: 1.5rem;
         }
-        .mindmap-level-remake:nth-of-type(4) {
-            gap: 2.5rem;
+        .mindmap-level-remake:nth-of-type(4) { /* Grandchildren (e.g. from mcu) */
+            gap: 2rem;
         }
         .mindmap-node-remake {
             border: 1px solid #00d4ff;
@@ -296,6 +304,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            flex-shrink: 0; /* Prevent nodes from shrinking too much if gap is small */
         }
          .mindmap-node-remake:hover {
             transform: scale(1.05);
@@ -317,21 +326,9 @@
             z-index: 1;
         }
         .connection-path-remake {
-            stroke: rgba(0, 212, 255, 0.7);
-            stroke-width: 1.5px;
+            stroke: rgba(0, 212, 255, 0.6); /* Slightly more subtle */
+            stroke-width: 2px; /* Slightly thicker for paths */
             fill: none;
-        }
-
-
-        /* Section styling */
-        .content-section-remake {
-            padding: 3rem 0;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid #2a2a4e;
-        }
-        .content-section-remake:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
         }
 
         /* Side Navigation Styling */
@@ -393,6 +390,8 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
             pointer-events: none;
+            text-indent: 0;
+            z-index: 1001;
         }
 
         .side-nav-menu-remake li a:hover::after {
@@ -473,17 +472,16 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 5px; /* Thinner bar */
+            height: 5px;
             background-color: rgba(255,255,255,0.1);
-            z-index: 1005; /* High z-index */
+            z-index: 1005;
         }
         .scroll-progress-bar-remake {
             height: 100%;
             background: linear-gradient(90deg, #00d4ff, #ff006e);
             width: 0%;
-            transition: width 0.05s linear; /* Faster transition */
+            transition: width 0.05s linear;
         }
-
 
         /* Responsive Design Adjustments */
         @media (max-width: 768px) {
@@ -531,13 +529,12 @@
             .mindmap-level-remake {
                 margin: 1rem 0;
                 gap: 1rem;
-                 /* Ensure vertical stacking on mobile if not already default for flex-wrap */
                 flex-direction: column;
-                align-items: center; /* Center nodes when stacked */
+                align-items: center;
             }
             .mindmap-node-remake {
                 min-width: 140px;
-                width: 80%; /* Allow nodes to take more width when stacked */
+                width: 80%;
                 max-width: 300px;
                 padding: 0.8rem 1rem;
             }
@@ -650,7 +647,7 @@
     <!-- Side Navigation Menu -->
     <nav class="side-nav-menu-remake">
         <ul>
-            <li><a href="#header" data-tooltip-remake="Overview" class="active-remake">Nav</a></li>
+            <li><a href="#header" data-tooltip-remake="Overview" class="active-remake">Nav</a></li> <!-- Initial active state -->
             <li><a href="#understanding" data-tooltip-remake="Understanding">Nav</a></li>
             <li><a href="#scientific" data-tooltip-remake="Scientific Background">Nav</a></li>
             <li><a href="#detection-flow" data-tooltip-remake="Detection Flow">Nav</a></li>
@@ -873,27 +870,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- DOM Element References ---
-            const particleContainer = document.getElementById('particle-container-remake'); // Corrected ID
+            const particleContainer = document.getElementById('particle-container-remake');
             const scrollProgressBar = document.querySelector('.scroll-progress-bar-remake');
             const sideNavLinks = document.querySelectorAll('.side-nav-menu-remake a');
-            const contentSections = document.querySelectorAll('header, .content-section-remake');
+            const contentSections = document.querySelectorAll('header, .content-section-remake'); // header is id="header"
             const mindmapConnectionsSVG = document.querySelector('.mindmap-svg-connections-remake');
             const mindmapElement = document.querySelector('.mindmap-remake');
             const popupsOverlay = document.querySelector('.popups-overlay-remake');
-            // const allPopupContents = document.querySelectorAll('.popup-content-remake'); // Not strictly needed if targeting by ID
             const popupTriggers = document.querySelectorAll('[data-popup-target-remake]');
-            const popupCloseButtons = document.querySelectorAll('[data-popup-close]'); // Assuming this attribute will be on close buttons
+            const popupCloseButtons = document.querySelectorAll('[data-popup-close]'); // Used on popup close buttons
 
             // --- Particle Animation ---
             const numParticles = 30;
             let particlesEnabled = true;
 
-            function createParticleRemake() { // Renamed
+            function createParticleRemake() {
                 const particle = document.createElement('div');
-                particle.classList.add('particle-remake'); // Use new class
-                // Styles are now primarily in CSS, JS only sets dynamic parts
+                particle.classList.add('particle-remake');
                 particle.style.left = `${Math.random() * 100}vw`;
-                particle.style.animationName = 'float'; // CSS keyframe name
+                // Animation properties are now in CSS @keyframes float
+                particle.style.animationName = 'float';
                 particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
                 particle.style.animationDelay = `${Math.random() * 7}s`;
                 particle.style.animationIterationCount = 'infinite';
@@ -901,7 +897,7 @@
                 if (particleContainer) particleContainer.appendChild(particle);
             }
 
-            function initParticlesRemake() { // Renamed
+            function initParticlesRemake() {
                 if (particlesEnabled && particleContainer) {
                     particleContainer.innerHTML = '';
                     for (let i = 0; i < numParticles; i++) createParticleRemake();
@@ -930,7 +926,7 @@
                 const targetId = sectionId.startsWith('#') ? sectionId.substring(1) : sectionId;
                 const section = document.getElementById(targetId);
                 if (section) {
-                    const headerOffset = 60; // Adjusted if a fixed header exists in the new design
+                    const headerOffset = 60;
                     const elementPosition = section.getBoundingClientRect().top + window.pageYOffset;
                     const offsetPosition = elementPosition - headerOffset;
 
@@ -951,24 +947,30 @@
             if ('IntersectionObserver' in window) {
                 const observerOptions = {
                     root: null,
-                    rootMargin: "-40% 0px -55% 0px", // activate when roughly middle 15% of viewport
+                    rootMargin: "-40% 0px -55% 0px", // Mid 15% of viewport
                     threshold: 0.01
                 };
 
-                let lastIntersectingEntry = null;
+                let lastActiveSectionId = null;
 
                 const navIntersectionCallback = (entries) => {
+                    let bestEntry = null;
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            lastIntersectingEntry = entry.target;
+                            if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+                                bestEntry = entry;
+                            }
                         }
                     });
 
-                    // If no new intersection, but we had one previously, it might mean we scrolled out of all observed areas
-                    // In such cases, we might want to keep the last one active or find the closest one.
-                    // For simplicity now, only update if a new bestEntry is found.
-                    if (lastIntersectingEntry) {
-                         const currentSectionId = lastIntersectingEntry.id;
+                    if (bestEntry) {
+                        lastActiveSectionId = bestEntry.target.id;
+                    }
+                    // If no entry is intersecting but we had a last active one, keep it.
+                    // This helps when scrolling fast past small sections or into areas with no observed sections.
+                    const currentSectionIdToHighlight = bestEntry ? bestEntry.target.id : lastActiveSectionId;
+
+                    if (currentSectionIdToHighlight) {
                         sideNavLinks.forEach(navLink => {
                             const tooltipText = navLink.getAttribute('data-tooltip-remake');
                             if (tooltipText) {
@@ -979,7 +981,7 @@
 
                                 const hrefTarget = navLink.getAttribute('href').substring(1);
 
-                                if (hrefTarget === currentSectionId || (currentSectionId === 'header' && sectionIdToMatch === 'overview')) {
+                                if (hrefTarget === currentSectionIdToHighlight || (currentSectionIdToHighlight === 'header' && sectionIdToMatch === 'overview')) {
                                     navLink.classList.add('active-remake');
                                 } else {
                                     navLink.classList.remove('active-remake');
@@ -990,7 +992,7 @@
                 };
                 const navObserver = new IntersectionObserver(navIntersectionCallback, observerOptions);
                 contentSections.forEach(section => {
-                    if(section) navObserver.observe(section); // Ensure section exists
+                    if(section) navObserver.observe(section);
                 });
             } else {
                 console.warn("IntersectionObserver not supported. Active navigation highlighting will not work.");
@@ -999,27 +1001,27 @@
             // --- Popup System ---
             let activePopup = null;
             function openPopupRemake(popupId) {
-                if (activePopup) closePopupRemake(); // Close any existing popup
+                if (activePopup) closePopupRemake();
                 const popup = document.getElementById(popupId);
                 if (popup && popupsOverlay) {
                     popup.style.display = 'block';
                     popupsOverlay.style.display = 'block';
                     document.body.style.overflow = 'hidden';
                     activePopup = popup;
-                     setTimeout(() => { if(activePopup) activePopup.style.opacity = 1; }, 10); // For CSS fade-in
+                     setTimeout(() => { if(activePopup) activePopup.style.opacity = 1; }, 10);
                 } else {
                     console.error("Popup content or overlay not found for ID:", popupId);
                 }
             }
             function closePopupRemake() {
                 if (activePopup && popupsOverlay) {
-                    activePopup.style.opacity = 0; // For CSS fade-out
-                    setTimeout(() => { // Wait for fade before hiding
+                    activePopup.style.opacity = 0;
+                    setTimeout(() => {
                         if (activePopup) activePopup.style.display = 'none';
                         if (popupsOverlay) popupsOverlay.style.display = 'none';
                         document.body.style.overflow = '';
                         activePopup = null;
-                    }, 300); // Match CSS transition duration
+                    }, 300);
                 }
             }
             popupTriggers.forEach(trigger => {
@@ -1039,7 +1041,7 @@
             const resetViewBtn = document.getElementById('reset-view-btn-remake');
             if(resetViewBtn) {
                 resetViewBtn.addEventListener('click', () => {
-                     scrollToSectionRemake('#header'); // Ensure # is present
+                     scrollToSectionRemake('#header');
                      if(activePopup) closePopupRemake();
                 });
             }
@@ -1052,74 +1054,70 @@
                 const mindmapRect = mindmapElement.getBoundingClientRect();
                 const nodeRect = nodeElement.getBoundingClientRect();
 
-                let x = 0, y = 0;
-                const relTop = nodeRect.top - mindmapRect.top;
-                const relLeft = nodeRect.left - mindmapRect.left;
+                // Calculate element's position relative to the .mindmap container (SVG parent)
+                // These are coordinates within the SVG canvas
+                const elemTopRel = nodeRect.top - mindmapRect.top;
+                const elemLeftRel = nodeRect.left - mindmapRect.left;
+                const elemWidth = nodeRect.width;
+                const elemHeight = nodeRect.height;
+
+                let x, y;
+                const spacingFactor = total > 1 ? total + 1 : 2; // Avoid division by zero if total is 1 for center
 
                 switch(edge) {
                     case 'top':
-                        x = relLeft + (nodeRect.width / (total + 1)) * (index + 1);
-                        y = relTop;
+                        y = elemTopRel;
+                        x = elemLeftRel + (elemWidth / spacingFactor) * (index + 1);
                         break;
                     case 'bottom':
-                        x = relLeft + (nodeRect.width / (total + 1)) * (index + 1);
-                        y = relTop + nodeRect.height;
+                        y = elemTopRel + elemHeight;
+                        x = elemLeftRel + (elemWidth / spacingFactor) * (index + 1);
                         break;
                     case 'left':
-                        x = relLeft;
-                        y = relTop + (nodeRect.height / (total + 1)) * (index + 1);
+                        x = elemLeftRel;
+                        y = elemTopRel + (elemHeight / spacingFactor) * (index + 1);
                         break;
                     case 'right':
-                        x = relLeft + nodeRect.width;
-                        y = relTop + (nodeRect.height / (total + 1)) * (index + 1);
+                        x = elemLeftRel + elemWidth;
+                        y = elemTopRel + (elemHeight / spacingFactor) * (index + 1);
                         break;
-                    default: // center
-                        x = relLeft + nodeRect.width / 2;
-                        y = relTop + nodeRect.height / 2;
+                    case 'center':
+                    default:
+                        x = elemLeftRel + elemWidth / 2;
+                        y = elemTopRel + elemHeight / 2;
+                        break;
                 }
                 return { x, y };
             }
 
             function drawMindmapPathRemake(svg, connection) {
-                const startPoint = getMindmapNodeConnectionPoint(connection.from, connection.fromEdge, connection.fromIndex, connection.fromTotal);
-                const endPoint = getMindmapNodeConnectionPoint(connection.to, connection.toEdge, connection.toIndex, connection.toTotal);
+                const start = getMindmapNodeConnectionPoint(connection.from, connection.fromEdge, connection.fromIndex, connection.fromTotal);
+                const end = getMindmapNodeConnectionPoint(connection.to, connection.toEdge, connection.toIndex, connection.toTotal);
 
-                if (!startPoint || !endPoint) {
-                    // console.error("Mindmap connection points not found for:", connection);
+                if (!start || !end) {
+                    // console.error("Mindmap connection points not found for:", connection.from, "to", connection.to);
                     return;
                 }
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                let d = `M ${startPoint.x} ${startPoint.y} `;
 
-                // Simple vertical S-curve or gentle curve
-                const dy = endPoint.y - startPoint.y;
-                const dx = endPoint.x - startPoint.x;
+                const dy = end.y - start.y;
+                // Control points for a gentle S-curve or direct curve based on vertical distance
+                const c1y = start.y + dy * 0.33;
+                const c2y = end.y - dy * 0.33;
 
-                // Control points for a gentle curve. Adjust factors for more/less curviness.
-                // A common approach for hierarchy is an S-curve for vertical connections.
-                let cx1 = startPoint.x;
-                let cy1 = startPoint.y + dy * 0.33; // Control point pulls line downwards initially
-                let cx2 = endPoint.x;
-                let cy2 = endPoint.y - dy * 0.33;   // Control point pulls line upwards towards end
-
-                if (Math.abs(dx) > Math.abs(dy)) { // More horizontal connection
-                    cx1 = startPoint.x + dx * 0.33;
-                    cy1 = startPoint.y;
-                    cx2 = endPoint.x - dx * 0.33;
-                    cy2 = endPoint.y;
-                }
-
-                d += `C ${cx1} ${cy1}, ${cx2} ${cy2}, ${endPoint.x} ${endPoint.y}`;
+                // Path definition for a cubic Bézier curve
+                // M = moveto, C = curveto (x1 y1, x2 y2, x y)
+                const d = `M ${start.x} ${start.y} C ${start.x} ${c1y}, ${end.x} ${c2y}, ${end.x} ${end.y}`;
 
                 path.setAttribute('d', d);
-                path.classList.add('connection-path-remake'); // New class for paths
+                path.classList.add('connection-path-remake');
                 svg.appendChild(path);
             }
 
             function renderAllMindmapPathsRemake() {
                 if (!mindmapConnectionsSVG || !mindmapElement) return;
-                mindmapConnectionsSVG.innerHTML = ''; // Clear existing paths
+                mindmapConnectionsSVG.innerHTML = '';
 
                 const connections = [
                     { from: 'node-main-remake', to: 'node-laser-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 5 },
@@ -1140,24 +1138,20 @@
                 connections.forEach(conn => drawMindmapPathRemake(mindmapConnectionsSVG, conn));
             }
 
-
             // Initial Calls
             initParticlesRemake();
             updateScrollProgress();
 
-            // Delay mindmap drawing slightly to ensure layout is stable
-            setTimeout(renderAllMindmapPathsRemake, 200);
-
+            setTimeout(renderAllMindmapPathsRemake, 250); // Increased timeout slightly for layout stabilization
 
             // Event Listeners
             window.addEventListener('scroll', updateScrollProgress);
 
-            let resizeTimeout; // Keep this for debouncing
+            let resizeTimeoutMindmap;
             window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
+                clearTimeout(resizeTimeoutMindmap);
+                resizeTimeoutMindmap = setTimeout(() => {
                     renderAllMindmapPathsRemake();
-                    // Nav highlighting is handled by IntersectionObserver, no need to call here
                 }, 250);
             });
         });
