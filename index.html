@@ -269,43 +269,63 @@
         }
         .mindmap-remake {
             position: relative; 
-            min-height: 600px; /* Increased min-height for tree */
+            min-height: 700px; /* Increased min-height for potentially deeper tree */
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 1rem 0; /* Add some padding for overall spacing */
         }
-        .mindmap-level-remake {
+        .hierarchical-mindmap-remake .mindmap-level-remake {
             display: flex;
-            justify-content: center;
-            align-items: stretch; 
-            gap: 1.5rem; 
-            margin: 2rem 0; /* Increased vertical margin between levels for tree */
-            flex-wrap: wrap;
-            width: 100%; 
+            justify-content: center; /* Center items by default, allow wrapping */
+            align-items: flex-start; 
+            gap: 2.5rem; /* Further increased gap */
+            margin: 3rem 0; /* Further Increased vertical margin */
+            flex-wrap: wrap; /* Allow wrapping for crowded levels */
+            width: 100%;
+            padding: 0 0.5rem; /* Reduced padding slightly */
         }
-         .mindmap-level-remake:nth-of-type(1) { /* Root node level */
-            margin-bottom: 3rem; 
+        /* Specific level styling for the hierarchical map */
+        .hierarchical-mindmap-remake .level-0 { 
+            margin-bottom: 4rem; 
+            justify-content: center; 
         }
-        .mindmap-level-remake:nth-of-type(2) { /* Children of root */
-            gap: 2rem; 
+        .hierarchical-mindmap-remake .level-1 {
+            /* justify-content: space-around; /* This might spread them too much if only a few items */
         }
-        .mindmap-level-remake:nth-of-type(3) { /* Grandchildren (e.g. from optics) */
-            gap: 1.5rem;   
+        .hierarchical-mindmap-remake .level-2 {
+             gap: 2rem; /* Slightly less gap for potentially more items */
         }
-        .mindmap-level-remake:nth-of-type(4) { /* Grandchildren (e.g. from mcu) */
-            gap: 2rem;   
+        .hierarchical-mindmap-remake .level-3 {
+            gap: 1.5rem;
         }
+        
+        /* Attempt to group children visually under their parents if they wrap.
+           This is a bit of a hack due to HTML structure. We give child groups a tendency to break.
+           This requires adding these classes to the HTML if not already present.
+           The current HTML uses mindmap-child-of-<parent-id> which is good.
+        */
+        .mindmap-child-of-mcu-main,
+        .mindmap-child-of-optical-system-main,
+        .mindmap-child-of-laser-module,
+        .mindmap-child-of-light-collection {
+            /* No specific rules here yet, flex item properties on nodes themselves will govern */
+        }
+
         .mindmap-node-remake {
             border: 1px solid #00d4ff;
             border-radius: 10px;
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1rem; /* Reduced padding */
             text-align: center;
-            min-width: 160px; 
-            background-color: rgba(10, 14, 39, 0.8); 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            min-width: 130px; /* Reduced min-width */
+            max-width: 160px; /* Reduced max-width */
+            background-color: rgba(10, 14, 39, 0.85); 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.25);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer; 
-            flex-shrink: 0; /* Prevent nodes from shrinking too much if gap is small */
+            flex-shrink: 1; 
+            flex-grow: 0;   
+            margin: 0.5rem; 
         }
          .mindmap-node-remake:hover {
             transform: scale(1.05);
@@ -765,7 +785,7 @@
                         <!-- Optical System Children -->
                         <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-laser-module" data-popup-target-remake="popup-laser-module">Laser Module (405nm)</div>
                         <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-flow-cell" data-popup-target-remake="popup-flow-cell">Flow Cell</div>
-                        <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-light-collection" data-popup-target-remake="popup-optical-components">Light Collection & Filtering</div> {/* Generic popup for now */}
+                        <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-light-collection" data-popup-target-remake="popup-optical-components">Light Collection & Filtering</div>
                         <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-detector-photodiode" data-popup-target-remake="popup-detector-photodiode">Detector (Photodiode)</div>
                     </div>
 
