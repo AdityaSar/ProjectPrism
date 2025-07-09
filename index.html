@@ -242,10 +242,11 @@
         .flowchart-step-remake::after { 
             content: '↓';
             position: absolute;
-            bottom: -30px; 
+            bottom: -32px; /* Adjusted slightly to ensure it visually touches or slightly overlaps */
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1.8rem; 
+            font-size: 2rem; /* Slightly increased size for better visibility */
+            line-height: 1; /* Ensure line height doesn't add extra space */
             color: #00d4ff;
             animation: pulseArrow-remake 1.5s infinite ease-in-out;
         }
@@ -326,9 +327,21 @@
             z-index: 1; 
         }
         .connection-path-remake { 
-            stroke: rgba(0, 212, 255, 0.6); /* Slightly more subtle */
-            stroke-width: 2px; /* Slightly thicker for paths */
+            stroke: rgba(0, 212, 255, 0.6); 
+            stroke-width: 2.5px; /* Slightly thicker for better visibility of animation */
             fill: none;
+            animation: pulseLine-remake 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseLine-remake {
+            0%, 100% {
+                stroke-opacity: 0.5;
+                stroke-width: 2.5px;
+            }
+            50% {
+                stroke-opacity: 1;
+                stroke-width: 3.5px; /* Pulse makes it slightly thicker and more opaque */
+            }
         }
 
         /* Side Navigation Styling */
@@ -729,28 +742,42 @@
         <section id="device-components" class="content-section-remake">
             <h2><span class="icon-remake">🔧</span> Device Components Overview</h2>
             <div class="mindmap-parent-container-remake">
-                <div class="mindmap-remake"> 
+                <div class="mindmap-remake hierarchical-mindmap-remake"> 
                     <svg class="mindmap-svg-connections-remake"></svg>
-                    <div class="mindmap-level-remake">
-                        <div class="mindmap-node-remake central-node-remake" id="node-main-remake" data-popup-target-remake="popup-main-device">Main Device: Microplastic Detector</div>
+                    <!-- Level 0: Main Device -->
+                    <div class="mindmap-level-remake level-0">
+                        <div class="mindmap-node-remake central-node-remake" id="node-detector-main" data-popup-target-remake="popup-main-device">Microplastic Detector</div>
                     </div>
-                    <div class="mindmap-level-remake">
-                        <div class="mindmap-node-remake level-1-node-remake" id="node-laser-remake" data-popup-target-remake="popup-laser-module">Laser Module (405nm)</div>
-                        <div class="mindmap-node-remake level-1-node-remake" id="node-optics-remake" data-popup-target-remake="popup-optical-components">Optical Components</div>
-                        <div class="mindmap-node-remake level-1-node-remake" id="node-flowcell-remake" data-popup-target-remake="popup-flow-cell">Flow Cell</div>
-                        <div class="mindmap-node-remake level-1-node-remake" id="node-detector-remake" data-popup-target-remake="popup-detector-photodiode">Detector (Photodiode)</div>
-                        <div class="mindmap-node-remake level-1-node-remake" id="node-mcu-remake" data-popup-target-remake="popup-mcu-arduino">MCU (Arduino Nano)</div>
+
+                    <!-- Level 1: Primary Sub-systems -->
+                    <div class="mindmap-level-remake level-1">
+                        <div class="mindmap-node-remake" id="node-power-supply" data-popup-target-remake="popup-power-supply">Power Supply</div>
+                        <div class="mindmap-node-remake" id="node-mcu-main" data-popup-target-remake="popup-mcu-arduino">MCU (Arduino Nano)</div>
+                        <div class="mindmap-node-remake" id="node-optical-system-main" data-popup-target-remake="popup-optical-components">Optical Detection System</div>
                     </div>
-                    <div class="mindmap-level-remake">
-                        <div class="mindmap-node-remake level-2-node-remake" id="node-lens1-remake" data-popup-target-remake="popup-collimating-lens">Collimating Lens</div>
-                        <div class="mindmap-node-remake level-2-node-remake" id="node-filter1-remake" data-popup-target-remake="popup-excitation-filter">Excitation Filter</div>
-                        <div class="mindmap-node-remake level-2-node-remake" id="node-lens2-remake" data-popup-target-remake="popup-focusing-lens">Focusing Lens</div>
-                        <div class="mindmap-node-remake level-2-node-remake" id="node-filter2-remake" data-popup-target-remake="popup-emission-filter">Emission Filter</div>
+
+                    <!-- Level 2: MCU Peripherals & Optical System Components -->
+                    <div class="mindmap-level-remake level-2">
+                        <!-- MCU Children -->
+                        <div class="mindmap-node-remake mindmap-child-of-mcu-main" id="node-display" data-popup-target-remake="popup-display-oled">Display (OLED)</div>
+                        <div class="mindmap-node-remake mindmap-child-of-mcu-main" id="node-ui" data-popup-target-remake="popup-user-interface">User Interface</div>
+                        
+                        <!-- Optical System Children -->
+                        <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-laser-module" data-popup-target-remake="popup-laser-module">Laser Module (405nm)</div>
+                        <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-flow-cell" data-popup-target-remake="popup-flow-cell">Flow Cell</div>
+                        <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-light-collection" data-popup-target-remake="popup-optical-components">Light Collection & Filtering</div> {/* Generic popup for now */}
+                        <div class="mindmap-node-remake mindmap-child-of-optical-system-main" id="node-detector-photodiode" data-popup-target-remake="popup-detector-photodiode">Detector (Photodiode)</div>
                     </div>
-                    <div class="mindmap-level-remake">
-                        <div class="mindmap-node-remake level-3-node-remake" id="node-power-remake" data-popup-target-remake="popup-power-supply">Power Supply</div>
-                        <div class="mindmap-node-remake level-3-node-remake" id="node-display-remake" data-popup-target-remake="popup-display-oled">Display (OLED)</div>
-                        <div class="mindmap-node-remake level-3-node-remake" id="node-interface-remake" data-popup-target-remake="popup-user-interface">User Interface</div>
+
+                    <!-- Level 3: Laser & Light Collection Sub-Components -->
+                    <div class="mindmap-level-remake level-3">
+                        <!-- Laser Module Children -->
+                        <div class="mindmap-node-remake mindmap-child-of-laser-module" id="node-collimating-lens" data-popup-target-remake="popup-collimating-lens">Collimating Lens</div>
+                        <div class="mindmap-node-remake mindmap-child-of-laser-module" id="node-excitation-filter" data-popup-target-remake="popup-excitation-filter">Excitation Filter</div>
+
+                        <!-- Light Collection Children -->
+                        <div class="mindmap-node-remake mindmap-child-of-light-collection" id="node-focusing-lens" data-popup-target-remake="popup-focusing-lens">Focusing Lens</div>
+                        <div class="mindmap-node-remake mindmap-child-of-light-collection" id="node-emission-filter" data-popup-target-remake="popup-emission-filter">Emission Filter</div>
                     </div>
                 </div>
             </div>
@@ -1054,32 +1081,34 @@
                 const mindmapRect = mindmapElement.getBoundingClientRect();
                 const nodeRect = nodeElement.getBoundingClientRect();
 
-                // Calculate element's position relative to the .mindmap container (SVG parent)
-                // These are coordinates within the SVG canvas
                 const elemTopRel = nodeRect.top - mindmapRect.top;
                 const elemLeftRel = nodeRect.left - mindmapRect.left;
                 const elemWidth = nodeRect.width;
                 const elemHeight = nodeRect.height;
 
                 let x, y;
-                const spacingFactor = total > 1 ? total + 1 : 2; // Avoid division by zero if total is 1 for center
+                // If total is 1, it means a single point, usually center of the edge.
+                // If total > 1, it means multiple points along the edge.
+                // index is 0-based.
+                const numSegments = total; // Number of segments to divide the edge into
+                const pointOffset = (idx, length) => (length / (numSegments + 1)) * (idx + 1);
 
                 switch(edge) {
                     case 'top':
                         y = elemTopRel;
-                        x = elemLeftRel + (elemWidth / spacingFactor) * (index + 1);
+                        x = elemLeftRel + pointOffset(index, elemWidth);
                         break;
                     case 'bottom':
                         y = elemTopRel + elemHeight;
-                        x = elemLeftRel + (elemWidth / spacingFactor) * (index + 1);
+                        x = elemLeftRel + pointOffset(index, elemWidth);
                         break;
                     case 'left':
                         x = elemLeftRel;
-                        y = elemTopRel + (elemHeight / spacingFactor) * (index + 1);
+                        y = elemTopRel + pointOffset(index, elemHeight);
                         break;
                     case 'right':
                         x = elemLeftRel + elemWidth;
-                        y = elemTopRel + (elemHeight / spacingFactor) * (index + 1);
+                        y = elemTopRel + pointOffset(index, elemHeight);
                         break;
                     case 'center':
                     default:
@@ -1091,24 +1120,31 @@
             }
 
             function drawMindmapPathRemake(svg, connection) {
-                const start = getMindmapNodeConnectionPoint(connection.from, connection.fromEdge, connection.fromIndex, connection.fromTotal);
-                const end = getMindmapNodeConnectionPoint(connection.to, connection.toEdge, connection.toIndex, connection.toTotal);
+                const start = getMindmapNodeConnectionPoint(connection.from, connection.fromEdge, connection.fromIndex || 0, connection.fromTotal || 1);
+                const end = getMindmapNodeConnectionPoint(connection.to, connection.toEdge, connection.toIndex || 0, connection.toTotal || 1);
+
 
                 if (!start || !end) {
-                    // console.error("Mindmap connection points not found for:", connection.from, "to", connection.to);
+                    console.warn("Mindmap connection points not found for:", connection.from, "to", connection.to, "Start:", start, "End:", end);
                     return;
                 }
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 
                 const dy = end.y - start.y;
-                // Control points for a gentle S-curve or direct curve based on vertical distance
-                const c1y = start.y + dy * 0.33;
-                const c2y = end.y - dy * 0.33;
+                const dx = end.x - start.x;
 
-                // Path definition for a cubic Bézier curve
-                // M = moveto, C = curveto (x1 y1, x2 y2, x y)
-                const d = `M ${start.x} ${start.y} C ${start.x} ${c1y}, ${end.x} ${c2y}, ${end.x} ${end.y}`;
+                // Control points for a hierarchical tree (typically S-curve or elbow)
+                // For vertical connections (typical tree):
+                // Control point 1: same X as start, Y halfway to end (or a fraction)
+                // Control point 2: same X as end, Y halfway from start (or a fraction)
+                // This creates an S-shape vertically.
+                const c1x = start.x;
+                const c1y = start.y + dy * 0.5; // Adjusted for smoother S-curve
+                const c2x = end.x;
+                const c2y = end.y - dy * 0.5; // Adjusted for smoother S-curve
+                
+                const d = `M ${start.x} ${start.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${end.x} ${end.y}`;
                 
                 path.setAttribute('d', d);
                 path.classList.add('connection-path-remake');
@@ -1119,33 +1155,64 @@
                 if (!mindmapConnectionsSVG || !mindmapElement) return;
                 mindmapConnectionsSVG.innerHTML = ''; 
 
+                // Define connections based on the new hierarchical structure
+                // {parentID, childID, parentEdge, childEdge}
+                // fromIndex/Total can be used if a parent connects to multiple children from the same edge point,
+                // but for a typical tree, it's often 1-to-1 from a point, or a spread.
+                // For simplicity, we'll default fromIndex=0, fromTotal=1 if not specified,
+                // implying the center of the specified edge.
+
                 const connections = [
-                    { from: 'node-main-remake', to: 'node-laser-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 5 },
-                    { from: 'node-main-remake', to: 'node-optics-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 5 },
-                    { from: 'node-main-remake', to: 'node-flowcell-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 5 },
-                    { from: 'node-main-remake', to: 'node-detector-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 3, fromTotal: 5 },
-                    { from: 'node-main-remake', to: 'node-mcu-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 4, fromTotal: 5 },
+                    // Level 0 (Main Detector) to Level 1 (Primary Sub-systems)
+                    { from: 'node-detector-main', to: 'node-power-supply', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-detector-main', to: 'node-mcu-main', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-detector-main', to: 'node-optical-system-main', fromEdge: 'bottom', toEdge: 'top' },
+
+                    // Level 1 (MCU) to Level 2 (MCU Peripherals)
+                    { from: 'node-mcu-main', to: 'node-display', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-mcu-main', to: 'node-ui', fromEdge: 'bottom', toEdge: 'top' },
+
+                    // Level 1 (Optical System) to Level 2 (Optical Components)
+                    { from: 'node-optical-system-main', to: 'node-laser-module', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-optical-system-main', to: 'node-flow-cell', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-optical-system-main', to: 'node-light-collection', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-optical-system-main', to: 'node-detector-photodiode', fromEdge: 'bottom', toEdge: 'top' },
                     
-                    { from: 'node-optics-remake', to: 'node-lens1-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 4 },
-                    { from: 'node-optics-remake', to: 'node-filter1-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 4 },
-                    { from: 'node-optics-remake', to: 'node-lens2-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 4 },
-                    { from: 'node-optics-remake', to: 'node-filter2-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 3, fromTotal: 4 },
-                    
-                    { from: 'node-mcu-remake', to: 'node-power-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 3 },
-                    { from: 'node-mcu-remake', to: 'node-display-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 3 },
-                    { from: 'node-mcu-remake', to: 'node-interface-remake', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 3 }
+                    // Level 2 (Laser Module) to Level 3 (Laser Sub-Components)
+                    { from: 'node-laser-module', to: 'node-collimating-lens', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-laser-module', to: 'node-excitation-filter', fromEdge: 'bottom', toEdge: 'top' },
+
+                    // Level 2 (Light Collection) to Level 3 (Light Collection Sub-Components)
+                    { from: 'node-light-collection', to: 'node-focusing-lens', fromEdge: 'bottom', toEdge: 'top' },
+                    { from: 'node-light-collection', to: 'node-emission-filter', fromEdge: 'bottom', toEdge: 'top' }
                 ];
-                connections.forEach(conn => drawMindmapPathRemake(mindmapConnectionsSVG, conn));
+                
+                connections.forEach(conn => {
+                    // Provide default fromIndex and fromTotal if not specified
+                    const fullConn = {
+                        fromIndex: 0, 
+                        fromTotal: 1, 
+                        toIndex: 0, 
+                        toTotal: 1, 
+                        ...conn
+                    };
+                    drawMindmapPathRemake(mindmapConnectionsSVG, fullConn);
+                });
             }
 
             // Initial Calls
             initParticlesRemake();
-            updateScrollProgress();
+            updateScrollProgressRemake(); 
             
-            setTimeout(renderAllMindmapPathsRemake, 250); // Increased timeout slightly for layout stabilization
+            // Delay rendering mindmap paths to allow layout to settle
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => setTimeout(renderAllMindmapPathsRemake, 350)); // Slightly increased delay
+            } else {
+                setTimeout(renderAllMindmapPathsRemake, 350); // Slightly increased delay
+            }
 
             // Event Listeners
-            window.addEventListener('scroll', updateScrollProgress);
+            window.addEventListener('scroll', updateScrollProgressRemake);
             
             let resizeTimeoutMindmap;
             window.addEventListener('resize', () => {
