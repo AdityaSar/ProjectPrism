@@ -300,7 +300,7 @@
       border: 1px solid rgba(255,255,255,0.2);
       margin: 4rem 0;
       position: relative;
-      overflow: hidden; /* Changed from visible to hidden for better containment if needed */
+      overflow: hidden; 
     }
 
     .mindmap-title {
@@ -313,8 +313,8 @@
     }
 
     .mindmap {
-      position: relative; /* This will be the reference for absolute positioning of SVG */
-      min-height: 600px; /* Ensure it has some height */
+      position: relative; 
+      min-height: 600px; 
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -325,20 +325,20 @@
       justify-content: center;
       align-items: center;
       gap: 2rem; 
-      margin: 2.5rem 0; /* Slightly increased margin between levels */
+      margin: 2.5rem 0; 
       flex-wrap: wrap;
     }
-    .mindmap-level:nth-of-type(1) { /* Central Node Level */
-        margin-bottom: 3rem; /* More space after central node */
+    .mindmap-level:nth-of-type(1) { 
+        margin-bottom: 3rem; 
     }
     .mindmap-level:nth-of-type(2) { 
-        gap: 2.5rem; /* Adjusted gap for 5 items */
+        gap: 2.5rem; 
     }
     .mindmap-level:nth-of-type(3) { 
-        gap: 2rem;   /* Adjusted gap for 4 items */
+        gap: 2rem;   
     }
     .mindmap-level:nth-of-type(4) { 
-        gap: 3rem;   /* Adjusted gap for 3 items */
+        gap: 3rem;   
     }
 
     .mindmap-node {
@@ -346,7 +346,7 @@
       border: 2px solid #00d4ff;
       border-radius: 15px;
       padding: 1.5rem 2rem;
-      position: relative; /* Needed for offsetLeft/offsetTop to work relative to .mindmap */
+      position: relative; 
       transition: all 0.4s ease;
       cursor: pointer;
       backdrop-filter: blur(10px);
@@ -1985,16 +1985,17 @@
 
     function getNodeConnectionPoint(elementId, edge = 'center', siblingIndex = 0, totalSiblings = 1) {
         const elem = document.getElementById(elementId);
-        if (!elem || !mindmapConnectionsSVG || !mindmapElement) return null;
+        // Ensure mindmapElement is valid and elem is a child of it or related for offset calculations
+        if (!elem || !mindmapConnectionsSVG || !mindmapElement || !mindmapElement.contains(elem)) {
+             // console.error(`getNodeConnectionPoint: Element ${elementId} or mindmap containers not found/related.`);
+            return null;
+        }
 
-        const mindmapGlobalRect = mindmapElement.getBoundingClientRect(); // Get mindmap's global position
-        const elemRect = elem.getBoundingClientRect();
-
-        // Calculate element's position relative to the .mindmap container
-        const elemTop = elemRect.top - mindmapGlobalRect.top;
-        const elemLeft = elemRect.left - mindmapGlobalRect.left;
-        const elemWidth = elemRect.width;
-        const elemHeight = elemRect.height;
+        // Use offsetLeft and offsetTop relative to the .mindmap container
+        const elemTop = elem.offsetTop;
+        const elemLeft = elem.offsetLeft;
+        const elemWidth = elem.offsetWidth;
+        const elemHeight = elem.offsetHeight;
 
         let x, y;
 
@@ -2038,29 +2039,27 @@
             line.setAttribute('y2', end.y);
             line.classList.add('connection-line');
             svgContainer.appendChild(line);
+        } else {
+            // console.error(`Failed to draw connection: ${from} to ${to}. Start or end point missing.`);
         }
     }
-
+    
     function drawAllMindmapConnections() {
-        if (!mindmapConnectionsSVG) return;
+        if (!mindmapConnectionsSVG || !mindmapElement) return;
         mindmapConnectionsSVG.innerHTML = ''; 
 
-        // Define connections with edge types and distribution hints
         const connections = [
-            // From node-main (bottom edge, distributed) to Level 1 nodes (top edge, centered)
             { from: 'node-main', to: 'node-laser', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 5 },
             { from: 'node-main', to: 'node-optics', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 5 },
             { from: 'node-main', to: 'node-flowcell', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 5 },
             { from: 'node-main', to: 'node-detector', fromEdge: 'bottom', toEdge: 'top', fromIndex: 3, fromTotal: 5 },
             { from: 'node-main', to: 'node-mcu', fromEdge: 'bottom', toEdge: 'top', fromIndex: 4, fromTotal: 5 },
             
-            // From node-optics (bottom edge, distributed) to its children (top edge, centered)
             { from: 'node-optics', to: 'node-lens1', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 4 },
             { from: 'node-optics', to: 'node-filter1', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 4 },
             { from: 'node-optics', to: 'node-lens2', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 4 },
             { from: 'node-optics', to: 'node-filter2', fromEdge: 'bottom', toEdge: 'top', fromIndex: 3, fromTotal: 4 },
             
-            // From node-mcu (bottom edge, distributed) to its children (top edge, centered)
             { from: 'node-mcu', to: 'node-power', fromEdge: 'bottom', toEdge: 'top', fromIndex: 0, fromTotal: 3 },
             { from: 'node-mcu', to: 'node-display', fromEdge: 'bottom', toEdge: 'top', fromIndex: 1, fromTotal: 3 },
             { from: 'node-mcu', to: 'node-interface', fromEdge: 'bottom', toEdge: 'top', fromIndex: 2, fromTotal: 3 }
@@ -2082,36 +2081,55 @@
 
       initParticles();
       updateScrollProgress(); 
-      drawAllMindmapConnections();
+      // Ensure mindmap is drawn after elements are fully rendered and positioned
+      // Using a small timeout can sometimes help if positions are not immediately correct.
+      setTimeout(drawAllMindmapConnections, 100);
 
+
+      // Revamped Navigation Illumination with Intersection Observer
       if ('IntersectionObserver' in window) {
         const observerOptions = {
           root: null, 
-          rootMargin: '-40% 0px -59% 0px', 
-          threshold: 0 
+          rootMargin: "-35% 0px -64% 0px", // Aims for a narrow band in the middle a bit more than 0.4-0.6
+          threshold: 0.01 // Trigger if even a tiny bit of this margin-adjusted element is visible
         };
 
         const navObserverCallback = (entries, observer) => {
+          let bestEntry = null;
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              const currentSectionId = entry.target.id;
-              navItems.forEach(item => {
-                const tooltip = item.querySelector('.nav-tooltip');
-                if (tooltip) {
-                  let sectionIdToMatch = tooltip.textContent.toLowerCase();
-                  sectionIdToMatch = sectionIdToMatch.replace(/\s*&\s*/g, '-and-');
-                  sectionIdToMatch = sectionIdToMatch.replace(/[\s_]+/g, '-');
-                  sectionIdToMatch = sectionIdToMatch.replace(/[^\w-]+/g, '');
-
-                  if ((currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch === 'header')) || sectionIdToMatch === currentSectionId) {
-                    item.classList.add('active');
-                  } else {
-                    item.classList.remove('active');
-                  }
-                }
-              });
+              if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+                bestEntry = entry;
+              }
             }
           });
+
+          if (bestEntry) {
+            const currentSectionId = bestEntry.target.id;
+            // console.log('IntersectionObserver - Active Section:', currentSectionId);
+            navItems.forEach(item => {
+              const tooltip = item.querySelector('.nav-tooltip');
+              if (tooltip) {
+                let sectionIdToMatch = tooltip.textContent.toLowerCase();
+                sectionIdToMatch = sectionIdToMatch.replace(/\s*&\s*/g, '-and-');
+                sectionIdToMatch = sectionIdToMatch.replace(/[\s_]+/g, '-');
+                sectionIdToMatch = sectionIdToMatch.replace(/[^\w-]+/g, '');
+
+                let isActive = false;
+                if (currentSectionId === 'header' && (sectionIdToMatch === 'overview' || sectionIdToMatch === 'header')) {
+                  isActive = true;
+                } else if (sectionIdToMatch === currentSectionId) {
+                  isActive = true;
+                }
+
+                if (isActive) {
+                  item.classList.add('active');
+                } else {
+                  item.classList.remove('active');
+                }
+              }
+            });
+          }
         };
         const navObserver = new IntersectionObserver(navObserverCallback, observerOptions);
         sections.forEach(section => navObserver.observe(section));
@@ -2119,6 +2137,7 @@
         console.warn("IntersectionObserver not supported. Active navigation highlighting might not work optimally.");
       }
 
+      // Event listeners for nav item clicks (if not already via onclick)
       navItems.forEach(item => {
           const tooltip = item.querySelector('.nav-tooltip');
           if (tooltip && !item.hasAttribute('onclick')) { 
@@ -2127,6 +2146,7 @@
           }
       });
       
+      // Event listeners for popup triggers
       const popupTriggers = document.querySelectorAll('[onclick^="showPopup"]');
       popupTriggers.forEach(trigger => {
           const onclickAttr = trigger.getAttribute('onclick');
